@@ -398,7 +398,7 @@ const S = {
 };
 
 // ── CATEGORY CONFIG ──
-const CAT_COLORS = {'جاতীয়':'#d32f2f','সারাদেশ':'#f57c00','বিশেষ সংবাদ':'#7b1fa2','বিশ্ব সংবাদ':'#1565c0','বাণিজ্য':'#2e7d32','অর্থনীতি':'#00695c','খেলা':'#e65100','আনন্দ সময়':'#c2185b','চাকরি':'#5c6bc0','মতামত':'#6d4c41'};
+const CAT_COLORS = {'জাতীয়':'#d32f2f','সারাদেশ':'#f57c00','বিশেষ সংবাদ':'#7b1fa2','বিশ্ব সংবাদ':'#1565c0','বাণিজ্য':'#2e7d32','অর্থনীতি':'#00695c','খেলা':'#e65100','আনন্দ সময়':'#c2185b','চাকরি':'#5c6bc0','মতামত':'#6d4c41'};
 const CAT_EMOJI = {'জাতীয়':'🏛️','সারাদেশ':'🗺️','বিশেষ সংবাদ':'📌','বিশ্ব সংবাদ':'🌍','বাণিজ্য':'💼','অর্থনীতি':'📈','খেলা':'⚽','আনন্দ সময়':'🎭','চাকরি':'📋','মতামত':'✍️'};
 
 // ── STATE ──
@@ -504,15 +504,15 @@ async function fetchData() {
     for(let r=1;r<rows.length;r++){
       const row=rows[r];
       if(!row[1]&&!row[2])continue;
-      if((row[11]||'published').trim()!=='published')continue;
+      if((row[10]||'published').trim()!=='published')continue;
       data.push({
         timestamp:row[0]||'',
         titleBn:row[1]||'',titleEn:row[2]||row[1]||'',
         category:row[3]||'সাধারণ',author:row[4]||'প্রতিনিধি',date:row[5]||'',
         contentBn:row[6]||'',contentEn:row[7]||row[6]||'',
         imageUrl:row[8]||'',
-        slug:row[10]||`art-${r}`,status:row[11]||'published',
-        summaryBn:row[12]||'',summaryEn:row[13]||row[12]||'',
+        slug:row[9]||`art-${r}`,status:row[10]||'published',
+        summaryBn:row[11]||'',summaryEn:row[12]||row[11]||'',
       });
     }
     articles = data.reverse();
