@@ -385,8 +385,8 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
 //  CONFIG — fill in before going live
 // ══════════════════════════════════════════════
 const CFG = {
-  SHEET_ID: '1G53jr4WwDMt6eiG-8ARvL7HyL4yquknECiUuQujUC8w',
-  SHEET_GID: '0',
+  // ← আপনার Apps Script Web App URL এখানে বসান
+  SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwFwyWqurgJLGBB1jP0xgK21hJ6EwJtZMc2CA8f27THUDtyKzk1AtymJiVmJTHfdZ2G/exec',
 };
 // ══════════════════════════════════════════════
 
@@ -493,30 +493,23 @@ function parseCSV(raw) {
 
 // ── FETCH ──
 async function fetchData() {
-  if (CFG.SHEET_ID === '1G53jr4WwDMt6eiG-8ARvL7HyL4yquknECiUuQujUC8w') { articles=[]; return; }
+  if (false) { // SCRIPT_URL configured
+    articles = [];
+    return;
+  }
   try {
-    const url = `https://docs.google.com/spreadsheets/d/${CFG.SHEET_ID}/pub?output=csv&gid=${CFG.SHEET_GID}&cachebust=${Date.now()}`;
-    const res = await fetch(url);
-    const txt = await res.text();
-    const rows = parseCSV(txt);
-    if (rows.length < 2) { articles=[]; return; }
-    const data=[];
-    for(let r=1;r<rows.length;r++){
-      const row=rows[r];
-      if(!row[1]&&!row[2])continue;
-      if((row[10]||'published').trim()!=='published')continue;
-      data.push({
-        timestamp:row[0]||'',
-        titleBn:row[1]||'',titleEn:row[2]||row[1]||'',
-        category:row[3]||'সাধারণ',author:row[4]||'প্রতিনিধি',date:row[5]||'',
-        contentBn:row[6]||'',contentEn:row[7]||row[6]||'',
-        imageUrl:row[8]||'',
-        slug:row[9]||`art-${r}`,status:row[10]||'published',
-        summaryBn:row[11]||'',summaryEn:row[12]||row[11]||'',
-      });
+    const res  = await fetch(`${CFG.SCRIPT_URL}?action=getPublished`);
+    const json = await res.json();
+    if (json.success) {
+      articles = json.articles.reverse(); // newest first
+    } else {
+      console.warn('API error:', json.error);
+      articles = [];
     }
-    articles = data.reverse();
-  } catch(e) { console.warn('Fetch error:',e); articles=[]; }
+  } catch(e) {
+    console.warn('Fetch failed:', e.message);
+    articles = [];
+  }
 }
 
 // ── TICKER ──
@@ -797,8 +790,20 @@ function route() {
   await fetchData();
   buildTicker();
   route();
+  // Show setup notice if URL not configured
+  if (false) { // SCRIPT_URL configured
+    document.getElementById('content').innerHTML = `
+      <div style="background:var(--sur);padding:40px 30px;margin-top:20px;border-left:4px solid var(--red);text-align:center">
+        <div style="font-size:48px;margin-bottom:14px">⚙️</div>
+        <h2 style="font-family:'Noto Serif Bengali',serif;font-size:20px;margin-bottom:8px">সেটআপ বাকি আছে</h2>
+        <p style="font-size:14px;color:var(--txt2);line-height:1.8">
+          <code>index.html</code> ফাইলে <strong>SCRIPT_URL</strong> সেট করুন।<br>
+          Apps Script deploy করার পর URL কপি করে বসান।
+        </p>
+      </div>`;
+  }
   window.addEventListener('hashchange', route);
-  setInterval(async()=>{ await fetchData(); buildTicker(); }, 5*60*1000);
+  setInterval(async()=>{ await fetchData(); buildTicker(); route(); }, 5*60*1000);
 })();
 </script>
 </body>
