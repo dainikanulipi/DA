@@ -5,10 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="দৈনিক অনুলিপি — সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে!">
 <title>দৈনিক অনুলিপি | সর্বশেষ সংবাদ</title>
-<!-- 
-  GOOGLE ADSENSE: Uncomment and replace with your publisher ID when approved
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
--->
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
@@ -342,6 +339,11 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
   <div class="loading"><div class="spin"></div><p>সংবাদ লোড হচ্ছে…</p></div>
 </div></div>
 
+<!-- AD BEFORE FOOTER -->
+<div class="wrap" style="padding-bottom:10px">
+  <div id="footer-ad-container"></div>
+</div>
+
 <!-- FOOTER -->
 <footer>
   <div class="wrap">
@@ -386,7 +388,7 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
 // ══════════════════════════════════════════════
 const CFG = {
   // ← আপনার Apps Script Web App URL এখানে বসান
-  SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwFwyWqurgJLGBB1jP0xgK21hJ6EwJtZMc2CA8f27THUDtyKzk1AtymJiVmJTHfdZ2G/exec',
+  SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwU0xxMSYdpxlkOWoRi2D2pgNWe9HumBSdMC8KwJ0r965bHbW_MfRPL_u7WcTd_tHB4/exec',
 };
 // ══════════════════════════════════════════════
 
@@ -578,30 +580,64 @@ function secHead(label, catKey='') {
 }
 
 
-// ── AD SLOTS ──
-// Replace the innerHTML with your actual Google AdSense <ins> tag
+// ── AD SLOTS (HARDCODED) ──
+// Banner ads — leaderboard style (728×90 area), shows on home & category pages
+const BANNER_ADS = [
+  {
+    img: '',
+    link: '#',
+    alt: 'বিজ্ঞাপন ১'
+  },
+  {
+    img: '',
+    link: '#',
+    alt: 'বিজ্ঞাপন ২'
+  },
+  {
+    img: '',
+    link: '#',
+    alt: 'বিজ্ঞাপন ৩'
+  },
+];
+
+// Sidebar ads — rectangle style (300×250 area), shows on article pages
+const SIDEBAR_ADS = [
+  {
+    img: '',
+    link: '#',
+    alt: 'সাইডবার বিজ্ঞাপন ১'
+  },
+  {
+    img: '',
+    link: '#',
+    alt: 'সাইডবার বিজ্ঞাপন ২'
+  },
+];
+
+let _bannerIdx = 0;
+let _sidebarIdx = 0;
+
 function adBanner(id='') {
+  const ad = BANNER_ADS[_bannerIdx % BANNER_ADS.length];
+  _bannerIdx++;
   return `<div class="ad-slot" id="ad-${id}">
     <div class="ad-label">বিজ্ঞাপন · Advertisement</div>
     <div class="ad-banner">
-      <!-- PASTE YOUR GOOGLE ADSENSE LEADERBOARD (728x90) TAG HERE -->
-      <!-- Example:
-      <ins class="adsbygoogle"
-           style="display:inline-block;width:728px;height:90px"
-           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-           data-ad-slot="XXXXXXXXXX"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-      -->
-      <span class="ad-placeholder">📢 বিজ্ঞাপনের স্থান — Google AdSense কোড এখানে বসান</span>
+      <a href="${ad.link}" target="_blank" rel="noopener">
+        <img src="${ad.img}" alt="${ad.alt}" style="max-width:100%;height:auto;display:block;margin:0 auto;">
+      </a>
     </div>
   </div>`;
 }
 function adSidebar(id='') {
+  const ad = SIDEBAR_ADS[_sidebarIdx % SIDEBAR_ADS.length];
+  _sidebarIdx++;
   return `<div class="ad-slot" id="ad-sb-${id}">
     <div class="ad-label">বিজ্ঞাপন · Advertisement</div>
     <div class="ad-sidebar">
-      <!-- PASTE YOUR GOOGLE ADSENSE RECTANGLE (300x250) TAG HERE -->
-      <span class="ad-placeholder">📢 বিজ্ঞাপন (300×250)</span>
+      <a href="${ad.link}" target="_blank" rel="noopener">
+        <img src="${ad.img}" alt="${ad.alt}" style="max-width:100%;height:auto;display:block;margin:0 auto;">
+      </a>
     </div>
   </div>`;
 }
@@ -629,6 +665,9 @@ function renderHome() {
     <div class="hs">${sides.map(makeSideCard).join('')}</div>
   </div>`;
 
+  // AD after hero
+  h += adBanner('home-hero');
+
   // LATEST
   h += secHead(s.latest);
   h += `<div class="cards">${latest.map(makeCard).join('')}</div>`;
@@ -636,7 +675,7 @@ function renderHome() {
   // AD after latest
   h += adBanner('home-1');
 
-  // CAT SECTIONS
+  // CAT SECTIONS — ad after EVERY category
   let catCount = 0;
   for(const cat of cats) {
     const ca = articles.filter(a=>a.category===cat).slice(0,3);
@@ -644,8 +683,12 @@ function renderHome() {
     h += secHead(cat, cat);
     h += `<div class="cards">${ca.map(makeCard).join('')}</div>`;
     catCount++;
-    if(catCount % 2 === 0) h += adBanner('cat-'+catCount);
+    h += adBanner('cat-'+catCount);
   }
+
+  // AD at very bottom of home
+  h += adBanner('home-bottom');
+
   set(h);
 }
 
@@ -695,7 +738,11 @@ async function renderArticle(slug) {
   }
 
   document.title = `${title||a.titleBn} | দৈনিক অনুলিপি`;
-  const paras = content.split('\n').filter(p=>p.trim()).map(p=>`<p>${p}</p>`).join('');
+  const parasArr = content.split('\n').filter(p=>p.trim());
+  const midPoint = Math.floor(parasArr.length / 2);
+  const firstHalf = parasArr.slice(0, midPoint).map(p=>`<p>${p}</p>`).join('');
+  const secondHalf = parasArr.slice(midPoint).map(p=>`<p>${p}</p>`).join('');
+  const paras = firstHalf + adBanner('art-mid') + secondHalf;
   const artUrl = encodeURIComponent(location.href);
   const related = articles.filter(x=>x.slug!==slug&&x.category===a.category).slice(0,3);
 
@@ -729,6 +776,7 @@ async function renderArticle(slug) {
     <div>
       <div>
       ${adSidebar('art')}
+      ${adSidebar('art-2')}
       <div class="sidebar-w">
         <div class="sw-head">${s.recent}</div>
         ${articles.filter(x=>x.slug!==slug).slice(0,6).map(x=>`
@@ -789,6 +837,9 @@ function route() {
 
   await fetchData();
   buildTicker();
+  // Inject persistent footer ad (always visible)
+  const footerAdEl = document.getElementById('footer-ad-container');
+  if(footerAdEl) footerAdEl.innerHTML = adBanner('footer');
   route();
   // Show setup notice if URL not configured
   if (false) { // SCRIPT_URL configured
