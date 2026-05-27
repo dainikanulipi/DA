@@ -351,7 +351,7 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
       <div>
         <div class="fl-logo">দৈনিক অনু<em>লি</em>পি</div>
         <div class="fl-tag">সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে!</div>
-        <div class="fl-info">প্রতিষ্ঠাতা ও প্রকাশক: অনিক অধিকারী<br>প্রধান সম্পাদক: মো: ফারহান শাহরিয়ার<br>© ২০২৬ দৈনিক অনুলিপি কর্তৃক সংরক্ষিত।</div>
+        <div class="fl-info">প্রতিষ্ঠাতা ও প্রকাশক: অনিক অধিকারী<br>প্রতিষ্ঠাতা ও প্রধান সম্পাদক: মো: ফারহান শাহরিয়ার<br>© ২০২৬ দৈনিক অনুলিপি কর্তৃক সংরক্ষিত।</div>
       </div>
       <div class="fc">
         <h5>বিভাগ</h5>
@@ -371,11 +371,11 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
       </div>
       <div class="fc">
         <h5>তথ্য</h5>
-        <a>আমাদের সম্পর্কে</a>
-        <a>যোগাযোগ করুন</a>
-        <a>বিজ্ঞাপন দিন</a>
+        <a onclick="openInfoPopup('about')" style="cursor:pointer;">আমাদের সম্পর্কে</a>
+        <a onclick="openContactPopup('যোগাযোগ')" style="cursor:pointer;">যোগাযোগ করুন</a>
+        <a onclick="openContactPopup('বিজ্ঞাপন')" style="cursor:pointer;">বিজ্ঞাপন দিন</a>
         <a href="submit.html" target="_blank">রিপোর্টার পোর্টাল</a>
-        <a>গোপনীয়তা নীতি</a>
+        <a onclick="openInfoPopup('privacy')" style="cursor:pointer;">গোপনীয়তা নীতি</a>
       </div>
     </div>
     <div class="fb-bot">দৈনিক অনুলিপি | Dainik Anulipi | The Daily Anulipi — সর্বস্বত্ব সংরক্ষিত ২০২৬</div>
@@ -856,6 +856,165 @@ function route() {
   window.addEventListener('hashchange', route);
   setInterval(async()=>{ await fetchData(); buildTicker(); route(); }, 5*60*1000);
 })();
+</script>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- CONTACT / বিজ্ঞাপন POPUP                  -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="contact-popup-overlay" onclick="closeContactPopup(event)" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);align-items:center;justify-content:center;">
+  <div style="background:var(--sur);width:100%;max-width:420px;margin:16px;border-top:4px solid var(--red);box-shadow:0 20px 60px rgba(0,0,0,.35);animation:popIn .22s ease;max-height:90vh;overflow-y:auto;">
+    <div style="padding:18px 20px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bdr);position:sticky;top:0;background:var(--sur);z-index:1;">
+      <div>
+        <div id="popup-title" style="font-size:17px;font-weight:700;color:var(--txt);font-family:'Noto Serif Bengali',serif;"></div>
+        <div style="font-size:11px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;margin-top:2px;">দৈনিক অনুলিপি</div>
+      </div>
+      <button onclick="closeContactPopup()" style="background:var(--sur3);border:none;width:32px;height:32px;border-radius:50%;font-size:16px;color:var(--txt2);cursor:pointer;flex-shrink:0;">✕</button>
+    </div>
+    <div style="padding:20px;">
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;">
+        <a href="tel:+8801935128454" style="display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--sur2);border:1px solid var(--bdr);text-decoration:none;color:var(--txt);transition:border-color .2s;" onmouseover="this.style.borderColor='var(--red)'" onmouseout="this.style.borderColor='var(--bdr)'">
+          <span style="font-size:20px;">📞</span>
+          <div><div style="font-size:11px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;">ফোন / Phone</div><div style="font-size:14px;font-weight:700;">+880 19-3512-8454</div></div>
+        </a>
+        <a href="mailto:dainikanulipi@gmail.com" style="display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--sur2);border:1px solid var(--bdr);text-decoration:none;color:var(--txt);transition:border-color .2s;" onmouseover="this.style.borderColor='var(--red)'" onmouseout="this.style.borderColor='var(--bdr)'">
+          <span style="font-size:20px;">✉️</span>
+          <div><div style="font-size:11px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;">ইমেইল / Email</div><div style="font-size:14px;font-weight:700;">dainikanulipi@gmail.com</div></div>
+        </a>
+        <a href="https://wa.me/8801935128454" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--sur2);border:1px solid var(--bdr);text-decoration:none;color:var(--txt);transition:border-color .2s;" onmouseover="this.style.borderColor='#25d366'" onmouseout="this.style.borderColor='var(--bdr)'">
+          <span style="font-size:20px;">💬</span>
+          <div><div style="font-size:11px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;">WhatsApp</div><div style="font-size:14px;font-weight:700;">+880 19-3512-8454</div></div>
+        </a>
+        <a href="https://facebook.com/dainikanulipi" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--sur2);border:1px solid var(--bdr);text-decoration:none;color:var(--txt);transition:border-color .2s;" onmouseover="this.style.borderColor='#1877f2'" onmouseout="this.style.borderColor='var(--bdr)'">
+          <span style="font-size:20px;">📘</span>
+          <div><div style="font-size:11px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;">Facebook</div><div style="font-size:14px;font-weight:700;">facebook.com/dainikanulipi</div></div>
+        </a>
+      </div>
+      <a href="https://dainikanulipi.github.io/da.com/#" target="_blank" rel="noopener" style="display:block;background:var(--red);color:#fff;text-align:center;padding:11px;font-size:14px;font-weight:700;font-family:'Noto Sans Bengali',sans-serif;text-decoration:none;" onmouseover="this.style.background='var(--dkred)'" onmouseout="this.style.background='var(--red)'">
+        🌐 ওয়েবসাইট ভিজিট করুন
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- INFO POPUP (আমাদের সম্পর্কে / গোপনীয়তা)  -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="info-popup-overlay" onclick="closeInfoPopup(event)" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);align-items:center;justify-content:center;">
+  <div style="background:var(--sur);width:100%;max-width:520px;margin:16px;border-top:4px solid var(--red);box-shadow:0 20px 60px rgba(0,0,0,.35);animation:popIn .22s ease;max-height:88vh;overflow-y:auto;">
+    <div style="padding:18px 20px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bdr);position:sticky;top:0;background:var(--sur);z-index:1;">
+      <div>
+        <div id="info-popup-title" style="font-size:17px;font-weight:700;color:var(--txt);font-family:'Noto Serif Bengali',serif;"></div>
+        <div style="font-size:11px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;margin-top:2px;">দৈনিক অনুলিপি</div>
+      </div>
+      <button onclick="closeInfoPopup()" style="background:var(--sur3);border:none;width:32px;height:32px;border-radius:50%;font-size:16px;color:var(--txt2);cursor:pointer;flex-shrink:0;">✕</button>
+    </div>
+    <div id="info-popup-body" style="padding:22px;font-family:'Noto Serif Bengali',serif;font-size:15px;line-height:1.9;color:var(--txt);"></div>
+  </div>
+</div>
+
+<style>
+@keyframes popIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+</style>
+
+<script>
+/* ── CONTACT POPUP ── */
+function openContactPopup(type) {
+  document.getElementById('popup-title').textContent = type === 'বিজ্ঞাপন' ? '📢 বিজ্ঞাপন দিন' : '📬 যোগাযোগ করুন';
+  document.getElementById('contact-popup-overlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeContactPopup(e) {
+  if (e && e.target !== document.getElementById('contact-popup-overlay')) return;
+  document.getElementById('contact-popup-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+/* ── INFO POPUP ── */
+const INFO_CONTENT = {
+  about: {
+    title: '🗞️ আমাদের সম্পর্কে',
+    body: `
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--bdr);">
+        <div>
+          <div style="font-size:28px;font-weight:700;font-family:'Noto Serif Bengali',serif;color:var(--txt);letter-spacing:-1px;">দৈনিক অনু<span style="color:var(--red)">লি</span>পি</div>
+          <div style="font-size:11px;color:var(--txt3);letter-spacing:1px;margin-top:2px;font-family:'Noto Sans Bengali',sans-serif;">DAINIK ANULIPI · THE DAILY ANULIPI</div>
+          <div style="font-size:12px;color:var(--txt2);font-style:italic;margin-top:3px;">সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে!</div>
+        </div>
+      </div>
+
+      <div style="background:var(--sur2);border-left:4px solid var(--red);padding:14px 16px;margin-bottom:18px;">
+        <div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px;font-family:'Noto Sans Bengali',sans-serif;">⚠️ জরুরি ঘোষণা</div>
+        <p style="font-size:13.5px;line-height:1.85;color:var(--txt2);margin:0;">এই নিউজ পোর্টালটি বর্তমানে "পরীক্ষামূলক সম্প্রচার" কার্যক্রম পরিচালনা করছে। আমরা সচেতনভাবে রাজনৈতিক সংবাদ এড়িয়ে চলি এবং শুধুমাত্র বিনোদন, তথ্য ও জনবার্থমূলক সংবাদ প্রকাশ করি। এখানে প্রকাশিত সংবাদের দায়ভার সংশ্লিষ্ট লেখকদের, পোর্টাল কর্তৃপক্ষের নয়। রেজিস্ট্রেশন প্রক্রিয়া এবং পূর্ণাঙ্গ সম্প্রচারের কাজ চলমান।</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
+        <div style="background:var(--sur2);padding:12px 14px;border:1px solid var(--bdr);">
+          <div style="font-size:10px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;margin-bottom:4px;">প্রতিষ্ঠাতা ও প্রকাশক</div>
+          <div style="font-size:13.5px;font-weight:700;">অনিক অধিকারী</div>
+        </div>
+        <div style="background:var(--sur2);padding:12px 14px;border:1px solid var(--bdr);">
+          <div style="font-size:10px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;margin-bottom:4px;">প্রতিষ্ঠাতা ও প্রধান সম্পাদক</div>
+          <div style="font-size:13.5px;font-weight:700;">মো: ফারহান শাহরিয়ার</div>
+        </div>
+      </div>
+
+      <p style="font-size:14px;line-height:1.9;color:var(--txt2);margin-bottom:14px;">দৈনিক অনুলিপি একটি অনলাইন সংবাদ পোর্টাল যা সত্য ও নিরপেক্ষ সংবাদ পরিবেশনের লক্ষ্যে যাত্রা শুরু করেছে। আমরা বিশ্বাস করি, তথ্যের অধিকার প্রতিটি মানুষের মৌলিক অধিকার।</p>
+
+      <div style="text-align:center;padding-top:14px;border-top:1px solid var(--bdr);">
+        <div style="font-size:11px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;">© ২০২৬ দৈনিক অনুলিপি কর্তৃক সংরক্ষিত</div>
+      </div>
+    `
+  },
+  privacy: {
+    title: '🔒 গোপনীয়তা নীতি',
+    body: `
+      <p style="font-size:12px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;margin-bottom:16px;">সর্বশেষ আপডেট: জানুয়ারি ২০২৬</p>
+      <div style="display:flex;flex-direction:column;gap:0;">
+        <div style="padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--bdr);">
+          <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:6px;font-family:'Noto Sans Bengali',sans-serif;">📋 তথ্য সংগ্রহ</div>
+          <p style="font-size:14px;line-height:1.85;color:var(--txt2);margin:0;">আমরা কেবলমাত্র পোর্টালের সেবা উন্নত করার জন্য প্রয়োজনীয় তথ্য সংগ্রহ করি। পাঠকদের ব্যক্তিগত তথ্য কোনো তৃতীয় পক্ষের কাছে বিক্রি বা হস্তান্তর করা হয় না।</p>
+        </div>
+        <div style="padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--bdr);">
+          <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:6px;font-family:'Noto Sans Bengali',sans-serif;">🍪 কুকিজ ব্যবহার</div>
+          <p style="font-size:14px;line-height:1.85;color:var(--txt2);margin:0;">এই পোর্টালটি ব্যবহারকারীর অভিজ্ঞতা উন্নত করতে কুকিজ ব্যবহার করে। থিম ও ভাষা পছন্দ সংরক্ষণের জন্য লোকাল স্টোরেজ ব্যবহার করা হয়।</p>
+        </div>
+        <div style="padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--bdr);">
+          <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:6px;font-family:'Noto Sans Bengali',sans-serif;">📰 বিষয়বস্তুর দায়বদ্ধতা</div>
+          <p style="font-size:14px;line-height:1.85;color:var(--txt2);margin:0;">পোর্টালে প্রকাশিত সংবাদ ও মতামতের দায়ভার সংশ্লিষ্ট লেখক ও রিপোর্টারদের। পোর্টাল কর্তৃপক্ষ সংবাদের সত্যতা যাচাইয়ে সচেষ্ট থাকে।</p>
+        </div>
+        <div style="padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--bdr);">
+          <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:6px;font-family:'Noto Sans Bengali',sans-serif;">📢 বিজ্ঞাপন নীতি</div>
+          <p style="font-size:14px;line-height:1.85;color:var(--txt2);margin:0;">আমরা বিজ্ঞাপনদাতাদের সাথে স্বচ্ছ ও নৈতিক ব্যবসায়িক সম্পর্ক বজায় রাখি। বিজ্ঞাপনের বিষয়বস্তু সম্পাদকীয় নীতিকে প্রভাবিত করে না।</p>
+        </div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:6px;font-family:'Noto Sans Bengali',sans-serif;">✉️ যোগাযোগ</div>
+          <p style="font-size:14px;line-height:1.85;color:var(--txt2);margin:0;">গোপনীয়তা সংক্রান্ত যেকোনো প্রশ্নের জন্য: <a href="mailto:dainikanulipi@gmail.com" style="color:var(--red);font-weight:700;">dainikanulipi@gmail.com</a></p>
+        </div>
+      </div>
+      <div style="text-align:center;padding-top:16px;margin-top:16px;border-top:1px solid var(--bdr);">
+        <div style="font-size:11px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;">© ২০২৬ দৈনিক অনুলিপি — সর্বস্বত্ব সংরক্ষিত</div>
+      </div>
+    `
+  }
+};
+
+function openInfoPopup(type) {
+  const content = INFO_CONTENT[type];
+  if (!content) return;
+  document.getElementById('info-popup-title').textContent = content.title;
+  document.getElementById('info-popup-body').innerHTML = content.body;
+  document.getElementById('info-popup-overlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeInfoPopup(e) {
+  if (e && e.target !== document.getElementById('info-popup-overlay')) return;
+  document.getElementById('info-popup-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeContactPopup(); closeInfoPopup(); }
+});
 </script>
 </body>
 </html>
