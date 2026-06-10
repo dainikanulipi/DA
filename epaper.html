@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="দৈনিক অনুলিপি ই-পেপার — আজকের সংখ্যা পড়ুন">
 <title>দৈনিক অনুলিপি | ই-পেপার</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 :root{
   --red:#C8102E;--dkred:#9e0b22;
@@ -16,7 +18,7 @@
   --bdr:#e0e0e0;--shd:rgba(0,0,0,.08);
   --nav-bg:#fff;--topbar:#1a1a1a;--foot:#0f0f0f;
   --tog-bg:#eee;--tog-c:#444;
-  --viewer-bg:#2a2a2a;
+  --viewer-bg:#2c2c2c;
 }
 [data-theme=dark]{
   --bg:#0d0d0d;--sur:#1b1b1b;--sur2:#212121;--sur3:#2b2b2b;
@@ -45,10 +47,13 @@ button{font-family:inherit;cursor:pointer;}
 .mast{background:var(--sur);border-bottom:3px solid var(--red);padding:12px 0;transition:background .3s;}
 .mast .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
 .logo{cursor:pointer;flex-shrink:0;}
-.logo-bn{font-size:44px;font-weight:700;color:var(--txt);line-height:1;letter-spacing:-2px;}
-.logo-bn em{color:var(--red);font-style:normal;}
-.logo-en{font-size:10.5px;color:var(--txt3);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px;font-family:'Noto Sans Bengali',sans-serif;}
 .logo-tag{font-size:12.5px;color:var(--txt2);font-style:italic;margin-top:3px;}
+.logo-img{height:62px;width:auto;max-width:177px;object-fit:contain;display:block;}
+.logo-img-light{display:block;}
+.logo-img-dark{display:none;}
+[data-theme=dark] .logo-img-light{display:none;}
+[data-theme=dark] .logo-img-dark{display:block;}
+.footer-logo-img{height:54px;width:auto;max-width:154px;object-fit:contain;display:block;margin-bottom:4px;}
 .mast-r{display:flex;align-items:center;gap:10px;}
 .theme-btn{background:var(--tog-bg);border:none;width:32px;height:32px;border-radius:50%;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--tog-c);transition:all .3s;}
 .theme-btn:hover{transform:rotate(20deg);}
@@ -65,8 +70,6 @@ button{font-family:inherit;cursor:pointer;}
 .ep-page{padding:20px 0 0;}
 .ep-layout{display:grid;grid-template-columns:1fr 280px;gap:18px;align-items:start;}
 @media(max-width:900px){.ep-layout{grid-template-columns:1fr;}}
-
-/* EDITION BAR */
 .ed-bar{background:var(--sur);border:1px solid var(--bdr);border-top:3px solid var(--red);padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;box-shadow:0 1px 6px var(--shd);}
 .ed-bar label{font-size:12.5px;font-weight:700;font-family:'Noto Sans Bengali',sans-serif;color:var(--txt3);white-space:nowrap;}
 .ed-date-input{border:1px solid var(--bdr);background:var(--sur2);color:var(--txt);padding:6px 10px;font-size:13px;font-family:'Noto Sans Bengali',sans-serif;outline:none;transition:border-color .2s;flex:1;min-width:140px;}
@@ -75,58 +78,62 @@ button{font-family:inherit;cursor:pointer;}
 .ed-go-btn:hover{background:var(--dkred);}
 .ed-info{font-size:12px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;margin-left:auto;}
 
-/* VIEWER */
+/* VIEWER SHELL */
 .ep-viewer{background:var(--sur);border:1px solid var(--bdr);box-shadow:0 2px 18px var(--shd);overflow:hidden;}
 
 /* TOOLBAR */
-.ep-toolbar{background:var(--sur2);border-bottom:1px solid var(--bdr);padding:9px 14px;display:flex;align-items:center;gap:8px;}
+.ep-toolbar{background:var(--sur2);border-bottom:1px solid var(--bdr);padding:8px 12px;display:flex;align-items:center;gap:8px;}
 .ep-toolbar-title{font-size:12.5px;font-weight:700;font-family:'Noto Sans Bengali',sans-serif;color:var(--txt3);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.tb-btn{background:var(--sur);border:1px solid var(--bdr);color:var(--txt2);width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .18s;flex-shrink:0;}
+.tb-controls{display:flex;align-items:center;gap:5px;flex-shrink:0;}
+.tb-btn{background:var(--sur);border:1px solid var(--bdr);color:var(--txt2);width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .18s;flex-shrink:0;}
 .tb-btn:hover{background:var(--red);color:#fff;border-color:var(--red);}
 .tb-btn:disabled{opacity:.3;pointer-events:none;}
-.tb-sep{width:1px;height:20px;background:var(--bdr);flex-shrink:0;margin:0 2px;}
-.page-indicator{font-size:12.5px;font-weight:700;font-family:'Noto Sans Bengali',sans-serif;color:var(--txt);white-space:nowrap;padding:0 4px;}
+.tb-sep{width:1px;height:18px;background:var(--bdr);flex-shrink:0;margin:0 2px;}
+.page-indicator{font-size:12px;font-weight:700;font-family:'Noto Sans Bengali',sans-serif;color:var(--txt);white-space:nowrap;padding:0 4px;min-width:70px;text-align:center;}
+.z-label{font-size:11px;font-family:'Noto Sans Bengali',sans-serif;color:var(--txt3);padding:0 4px;min-width:38px;text-align:center;}
+.tb-dl-btn{background:var(--red);color:#fff;border:none;padding:5px 10px;font-size:12px;font-family:'Noto Sans Bengali',sans-serif;font-weight:700;text-decoration:none;transition:background .2s;white-space:nowrap;}
+.tb-dl-btn:hover{background:var(--dkred);}
 
-/* IMAGE AREA */
-.ep-img-area{position:relative;background:var(--viewer-bg);display:flex;align-items:center;justify-content:center;min-height:520px;overflow:hidden;user-select:none;}
-.ep-img-wrap{position:relative;display:flex;align-items:center;justify-content:center;width:100%;}
-.ep-img-inner{position:relative;display:inline-block;line-height:0;padding:24px 0;}
-.ep-img-inner img{max-width:calc(100% - 80px);max-height:78vh;width:auto;height:auto;display:block;box-shadow:0 12px 50px rgba(0,0,0,.7);transform-origin:center center;transition:transform .22s ease;cursor:grab;}
-.ep-img-inner img:active{cursor:grabbing;}
-.ep-img-inner img.loading-img{opacity:0;}
-.ep-img-inner img.loaded-img{opacity:1;transition:opacity .3s;}
+/* BOOK AREA */
+.book-area{position:relative;background:var(--viewer-bg);min-height:560px;display:flex;align-items:center;justify-content:center;padding:24px 50px;overflow:hidden;}
 
-/* spinner */
-.ep-spinner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#666;}
-.ep-spinner .spin{width:34px;height:34px;border:3px solid #333;border-top-color:var(--red);border-radius:50%;animation:spin .75s linear infinite;}
+/* BOOK STAGE — two pages side by side */
+.book-stage{display:flex;align-items:stretch;box-shadow:0 20px 60px rgba(0,0,0,.7);position:relative;max-width:100%;}
+
+/* Single page */
+.book-page{background:#fff;position:relative;line-height:0;overflow:hidden;flex-shrink:0;}
+.book-page canvas{display:block;max-width:100%;}
+.book-page .page-num{position:absolute;bottom:6px;width:100%;text-align:center;font-size:11px;color:#888;font-family:'Noto Sans Bengali',sans-serif;pointer-events:none;}
+
+/* Single page mode — right page always hidden */
+.right-page{display:none !important;}
+.left-page{border:none;box-shadow:none;}
+
+/* BOOK NAV ARROWS */
+.book-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.4);backdrop-filter:blur(4px);color:#fff;border:none;width:36px;height:60px;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .18s;z-index:10;}
+.book-nav:hover{background:var(--red);}
+.book-nav:disabled{opacity:.15;pointer-events:none;}
+.book-nav.left{left:6px;border-radius:0 3px 3px 0;}
+.book-nav.right{right:6px;border-radius:3px 0 0 3px;}
+
+/* SPINNER */
+.ep-spinner{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#888;z-index:5;}
+.ep-spinner .spin{width:36px;height:36px;border:3px solid #444;border-top-color:var(--red);border-radius:50%;animation:spin .75s linear infinite;}
 .ep-spinner p{font-size:13px;font-family:'Noto Sans Bengali',sans-serif;}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* error */
-.ep-error{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#666;text-align:center;padding:30px;}
-.ep-error .err-icon{font-size:40px;}
+/* ERROR */
+.ep-error{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#666;text-align:center;padding:30px;z-index:5;}
+.ep-error .err-icon{font-size:42px;}
 .ep-error p{font-size:14px;font-family:'Noto Sans Bengali',sans-serif;line-height:1.75;}
 .ep-error small{font-size:11px;color:#444;font-family:monospace;}
 
-/* nav arrows */
-.ep-nav-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.45);backdrop-filter:blur(4px);color:#fff;border:none;width:40px;height:64px;font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .18s;z-index:10;}
-.ep-nav-btn:hover{background:var(--red);}
-.ep-nav-btn:disabled{opacity:.15;pointer-events:none;}
-.ep-nav-btn.left{left:0;border-radius:0 3px 3px 0;}
-.ep-nav-btn.right{right:0;border-radius:3px 0 0 3px;}
-
-/* zoom bar */
-.zoom-bar{position:absolute;bottom:12px;right:12px;display:flex;gap:5px;z-index:10;}
-.z-btn{background:rgba(0,0,0,.5);backdrop-filter:blur(4px);border:none;color:#fff;width:30px;height:30px;font-size:14px;display:flex;align-items:center;justify-content:center;border-radius:3px;transition:background .18s;}
-.z-btn:hover{background:var(--red);}
-.z-label{background:rgba(0,0,0,.5);backdrop-filter:blur(4px);color:#bbb;font-size:11px;font-family:'Noto Sans Bengali',sans-serif;padding:0 8px;display:flex;align-items:center;border-radius:3px;min-width:44px;justify-content:center;}
-
 /* BOTTOM STRIP */
-.ep-strip{background:var(--sur2);border-top:1px solid var(--bdr);padding:10px 14px;display:flex;align-items:center;gap:8px;}
+.ep-strip{background:var(--sur2);border-top:1px solid var(--bdr);padding:10px 14px;}
 .ep-strip-info{font-size:11.5px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;}
 .ep-strip-info strong{color:var(--txt2);}
 
-/* THUMBNAIL STRIP */
+/* THUMBNAIL ROW */
 .thumb-section{margin-top:14px;}
 .thumb-label{font-size:11px;font-family:'Noto Sans Bengali',sans-serif;color:var(--txt3);margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;}
 .thumb-row{display:flex;gap:7px;overflow-x:auto;padding-bottom:5px;scrollbar-width:thin;scrollbar-color:var(--bdr) transparent;}
@@ -135,11 +142,33 @@ button{font-family:inherit;cursor:pointer;}
 .thumb-item{flex-shrink:0;cursor:pointer;border:2px solid var(--bdr);transition:all .18s;position:relative;background:#111;overflow:hidden;}
 .thumb-item:hover{border-color:var(--red);transform:translateY(-2px);}
 .thumb-item.active{border-color:var(--red);}
-.thumb-item img{width:68px;height:100px;object-fit:cover;display:block;transition:opacity .3s;}
-.thumb-item img.th-loading{opacity:.2;}
-.thumb-item img.th-loaded{opacity:1;}
-.thumb-item .thumb-num{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.65);color:#fff;font-size:10px;font-weight:700;text-align:center;padding:2px 0;font-family:'Noto Sans Bengali',sans-serif;}
+.thumb-item canvas{width:68px;height:100px;display:block;}
+.thumb-num{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.65);color:#fff;font-size:10px;font-weight:700;text-align:center;padding:2px 0;font-family:'Noto Sans Bengali',sans-serif;}
 .thumb-item.active .thumb-num{background:var(--red);}
+
+/* FULLSCREEN OVERLAY */
+.fs-overlay{display:none;position:fixed;inset:0;z-index:9000;background:#111;flex-direction:column;}
+.fs-overlay.open{display:flex;}
+.fs-topbar{background:#0a0a0a;border-bottom:1px solid #1e1e1e;padding:9px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0;flex-wrap:wrap;}
+.fs-title{color:#999;font-size:12.5px;font-family:'Noto Sans Bengali',sans-serif;flex:1;min-width:100px;}
+.fs-controls{display:flex;align-items:center;gap:5px;}
+.fs-btn{background:#1e1e1e;border:1px solid #333;color:#bbb;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .18s;}
+.fs-btn:hover{background:var(--red);border-color:var(--red);color:#fff;}
+.fs-btn:disabled{opacity:.2;pointer-events:none;}
+.fs-close{background:#1e1e1e;border:1px solid #333;color:#888;font-size:13px;padding:6px 12px;font-family:'Noto Sans Bengali',sans-serif;transition:all .2s;}
+.fs-close:hover{background:var(--red);border-color:var(--red);color:#fff;}
+.fs-pg{color:#555;font-size:12px;font-family:'Noto Sans Bengali',sans-serif;min-width:80px;text-align:center;}
+.fs-body{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;padding:20px 54px;}
+.fs-stage{display:flex;align-items:stretch;box-shadow:0 24px 80px rgba(0,0,0,.9);max-height:100%;max-width:100%;}
+.fs-page{background:#fff;position:relative;line-height:0;overflow:hidden;flex-shrink:0;}
+.fs-page canvas{display:block;max-height:calc(100vh - 100px);width:auto;}
+.fs-page.fs-left{border:none;box-shadow:none;}
+.fs-page.fs-right{display:none !important;}
+.fs-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.06);color:#fff;border:none;width:40px;height:70px;font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.fs-nav:hover{background:var(--red);}
+.fs-nav:disabled{opacity:.1;pointer-events:none;}
+.fs-nav.left{left:6px;}
+.fs-nav.right{right:6px;}
 
 /* SECTION HEADER */
 .sh{display:flex;align-items:center;margin-bottom:12px;}
@@ -160,31 +189,11 @@ button{font-family:inherit;cursor:pointer;}
 .tips-box{background:var(--sur);border:1px solid var(--bdr);padding:14px;margin-top:14px;box-shadow:0 1px 8px var(--shd);}
 .tip-row{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12px;font-family:'Noto Sans Bengali',sans-serif;color:var(--txt2);}
 .tip-row span:first-child{font-size:14px;flex-shrink:0;}
-.tip-row + .tip-row{border-top:1px solid var(--bdr);}
+.tip-row+.tip-row{border-top:1px solid var(--bdr);}
 
-/* FULLSCREEN */
-.fs-overlay{display:none;position:fixed;inset:0;z-index:9000;background:#000;flex-direction:column;}
-.fs-overlay.open{display:flex;}
-.fs-topbar{background:#0e0e0e;border-bottom:1px solid #1e1e1e;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
-.fs-title{color:#bbb;font-size:13px;font-family:'Noto Sans Bengali',sans-serif;flex:1;}
-.fs-zoom-bar{display:flex;gap:5px;align-items:center;}
-.fs-close{background:none;border:1px solid #333;color:#888;font-size:16px;padding:5px 10px;transition:all .2s;border-radius:3px;}
-.fs-close:hover{background:var(--red);border-color:var(--red);color:#fff;}
-.fs-img-area{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
-.fs-img-area img{max-width:100%;max-height:100%;object-fit:contain;transition:transform .22s;}
-.fs-nav-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.06);color:#fff;border:none;width:48px;height:76px;font-size:22px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
-.fs-nav-btn:hover{background:var(--red);}
-.fs-nav-btn:disabled{opacity:.12;pointer-events:none;}
-.fs-nav-btn.left{left:0;}
-.fs-nav-btn.right{right:0;}
-.fs-bottom{background:#0e0e0e;border-top:1px solid #1e1e1e;padding:10px 16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.fs-pg{color:#666;font-size:13px;font-family:'Noto Sans Bengali',sans-serif;}
-
-/* ── FOOTER (exact from index.html) ── */
+/* FOOTER */
 footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background .3s;}
 .fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:24px;padding-bottom:20px;border-bottom:1px solid #1e1e1e;}
-.fl-logo{font-size:26px;font-weight:700;color:#ddd;font-family:'Noto Serif Bengali',serif;}
-.fl-logo em{color:var(--red);font-style:normal;}
 .fl-tag{font-size:11px;color:#333;font-style:italic;margin-top:3px;}
 .fl-info{font-size:11px;color:#3a3a3a;line-height:1.9;margin-top:10px;}
 .fc h5{color:#888;font-size:12px;font-weight:700;margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid #1e1e1e;font-family:'Noto Sans Bengali',sans-serif;}
@@ -192,21 +201,89 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
 .fc a:hover{color:var(--red);}
 .fb-bot{text-align:center;padding:10px;font-size:11px;color:#2e2e2e;font-family:'Noto Sans Bengali',sans-serif;}
 
-/* POPUP */
 @keyframes popIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+.about-logo{height:64px;width:auto;max-width:220px;object-fit:contain;margin:0 auto;}
+.about-logo-light{display:block;}
+.about-logo-dark{display:none;}
+[data-theme=dark] .about-logo-light{display:none;}
+[data-theme=dark] .about-logo-dark{display:block;}
 
-/* RESPONSIVE */
+/* ══ RESPONSIVE — Phone / Tablet / Laptop / PC ══ */
+
+/* ── Large Desktop (1240px+) ── */
+@media(min-width:1240px){
+  .book-area{min-height:640px;}
+}
+
+/* ── Laptop (900px–1239px) ── */
+@media(max-width:1239px){
+  .wrap{padding:0 14px;}
+  .book-area{min-height:520px;}
+}
+
+/* ── Tablet (600px–899px) ── */
+@media(max-width:900px){
+  .ep-layout{grid-template-columns:1fr;}
+  .ep-right{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .tips-box{margin-top:0;}
+  .book-area{min-height:460px;}
+}
+
 @media(max-width:960px){.fg{grid-template-columns:1fr 1fr;}}
-@media(max-width:600px){
-  .logo-bn{font-size:30px;}
-  .ep-img-inner img{max-width:calc(100% - 56px);}
-  .ep-nav-btn{width:28px;height:50px;font-size:16px;}
-  .tb-btn{width:28px;height:28px;font-size:13px;}
-  .ed-bar{gap:8px;}
+
+/* ── Large Phone / Small Tablet (600px–699px) ── */
+@media(max-width:700px){
+  .book-area{padding:16px 40px;min-height:380px;}
+  .ep-toolbar{flex-wrap:wrap;gap:6px;}
+  .ep-toolbar-title{font-size:11.5px;width:100%;order:-1;}
+  .tb-controls{flex-wrap:wrap;justify-content:center;}
+  .ed-bar{flex-wrap:wrap;gap:8px;}
+  .ed-date-input{min-width:120px;}
+  .topbar{font-size:11px;}
+  .ep-right{grid-template-columns:1fr;}
+  .tips-box{margin-top:14px;}
+}
+
+/* ── Phone (< 600px) ── */
+@media(max-width:599px){
   .fg{grid-template-columns:1fr;}
   footer{padding:20px 0 0;}
+  .fs-body{padding:12px 44px;}
+  .topbar .wrap{flex-direction:column;gap:4px;text-align:center;}
+  .topbar-r{justify-content:center;}
+  .mast .wrap{flex-direction:column;align-items:flex-start;gap:8px;}
+  .mast-r{align-self:flex-end;}
+  .logo-img{height:50px;}
+  .book-area{padding:10px 34px;min-height:300px;}
+  .book-nav{width:28px;height:50px;font-size:15px;}
+  .ep-toolbar{padding:6px 8px;gap:4px;}
+  .ep-toolbar-title{font-size:11px;}
+  .tb-btn{width:26px;height:26px;font-size:12px;}
+  .tb-dl-btn{font-size:11px;padding:4px 8px;}
+  .page-indicator{font-size:11px;min-width:54px;}
+  .ed-bar{padding:10px 12px;gap:7px;}
+  .ed-date-input{font-size:12px;padding:5px 8px;}
+  .ed-go-btn{padding:6px 14px;font-size:12px;}
+  .thumb-item canvas{width:52px !important;height:78px !important;}
+  .arch-date{font-size:12px;}
+  .sh h3{font-size:12px;}
+  .nav .wrap{gap:0;}
+  .nl{font-size:12px;padding:9px 10px;}
+  .ep-right{display:flex;flex-direction:column;}
+  .fs-topbar{flex-wrap:wrap;gap:6px;padding:7px 10px;}
+  .fs-btn{width:28px;height:28px;font-size:12px;}
+  .fs-close{font-size:12px;padding:5px 10px;}
+  .fs-body{padding:10px 38px;}
 }
-</style>
+
+/* ── Very Small Phone (< 380px) ── */
+@media(max-width:380px){
+  .book-area{padding:8px 28px;min-height:260px;}
+  .book-nav{width:24px;height:44px;font-size:13px;}
+  .ep-toolbar-title{display:none;}
+  .thumb-item canvas{width:44px !important;height:66px !important;}
+  .wrap{padding:0 10px;}
+}</style>
 </head>
 <body>
 
@@ -226,8 +303,8 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
 <div class="mast">
   <div class="wrap">
     <div class="logo" onclick="location.href='index.html'">
-      <div class="logo-bn">দৈনিক অনু<em>লি</em>পি</div>
-      <div class="logo-en">Dainik Anulipi · The Daily Anulipi</div>
+      <img src="assets/logo.png"      alt="দৈনিক অনুলিপি" class="logo-img logo-img-light">
+      <img src="assets/logo-dark.png" alt="দৈনিক অনুলিপি" class="logo-img logo-img-dark">
       <div class="logo-tag">সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে!</div>
     </div>
     <div class="mast-r">
@@ -262,73 +339,35 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
         <div class="ep-viewer">
           <div class="ep-toolbar">
             <span class="ep-toolbar-title" id="ep-toolbar-title">লোড হচ্ছে…</span>
-            <button class="tb-btn" id="btn-prev" onclick="goPage(-1)" title="আগের পাতা" disabled>◀</button>
-            <span class="page-indicator" id="page-indicator">—</span>
-            <button class="tb-btn" id="btn-next" onclick="goPage(1)" title="পরের পাতা" disabled>▶</button>
-            <div class="tb-sep"></div>
-            <button class="tb-btn" onclick="zoomOut()" title="ছোট করুন">−</button>
-            <button class="tb-btn" onclick="zoomReset()" title="আসল আকার">↺</button>
-            <button class="tb-btn" onclick="zoomIn()" title="বড় করুন">+</button>
-            <div class="tb-sep"></div>
-            <button class="tb-btn" onclick="openFullscreen()" title="পূর্ণ পর্দা">⛶</button>
+            <div class="tb-controls">
+              <a id="pdf-download-btn" href="#" download class="tb-dl-btn" style="display:none;">⬇ ডাউনলোড</a>
+            </div>
           </div>
 
-          <div class="ep-img-area" id="ep-img-area">
-            <button class="ep-nav-btn left" id="nav-left" onclick="goPage(-1)" disabled>❮</button>
-            <div class="ep-img-wrap">
-              <div class="ep-img-inner">
-                <img id="ep-main-img" src="" alt="ই-পেপার পাতা"
-                  ondragstart="return false"
-                  onload="onImgLoad()"
-                  onerror="onImgError()">
-              </div>
-            </div>
-            <div class="ep-spinner" id="ep-spinner">
-              <div class="spin"></div>
-              <p>পাতা লোড হচ্ছে…</p>
-            </div>
-            <div class="ep-error" id="ep-error">
-              <div class="err-icon">📂</div>
-              <p>এই সংখ্যার ই-পেপার পাওয়া যাচ্ছে না।</p>
-              <small id="ep-error-path"></small>
-            </div>
-            <button class="ep-nav-btn right" id="nav-right" onclick="goPage(1)" disabled>❯</button>
-            <div class="zoom-bar">
-              <span class="z-label" id="zoom-label">100%</span>
-              <button class="z-btn" onclick="zoomOut()">−</button>
-              <button class="z-btn" onclick="zoomReset()">↺</button>
-              <button class="z-btn" onclick="zoomIn()">+</button>
-            </div>
+          <div id="book-area" style="left:0;width:100%;height:0;position:relative;padding-bottom:129.4118%;">
+            <iframe id="epaper-iframe" src="" style="top:0;left:0;width:100%;height:100%;position:absolute;border:0;" allowfullscreen></iframe>
           </div>
 
           <div class="ep-strip">
             <div class="ep-strip-info">
               <strong>দৈনিক অনুলিপি</strong> &nbsp;·&nbsp;
-              <span id="strip-date"></span> &nbsp;·&nbsp;
-              মোট পাতা: <span id="strip-total">৮</span>
+              <span id="strip-date"></span>
             </div>
           </div>
         </div>
 
-        <div class="thumb-section">
-          <div class="thumb-label">সব পাতা — বেছে নিন</div>
-          <div class="thumb-row" id="thumb-row"></div>
-        </div>
+
       </div>
 
       <!-- RIGHT: Sidebar -->
       <div class="ep-right">
-        <div class="sh"><h3>পুরনো সংখ্যা</h3><div class="sh-line"></div></div>
-        <div class="archive-box">
-          <div class="arch-list" id="arch-list"></div>
-        </div>
         <div class="tips-box">
           <div class="sh" style="margin-bottom:10px;"><h3>ব্যবহার নির্দেশিকা</h3><div class="sh-line"></div></div>
-          <div class="tip-row"><span>🖱️</span><span>স্ক্রোল করে জুম করুন</span></div>
-          <div class="tip-row"><span>👆</span><span>সোয়াইপ করে পাতা বদলান</span></div>
-          <div class="tip-row"><span>⌨️</span><span>← → তীর চিহ্নে নেভিগেট করুন</span></div>
-          <div class="tip-row"><span>⛶</span><span>পূর্ণ পর্দায় পড়তে ক্লিক করুন</span></div>
-          <div class="tip-row"><span>+/−</span><span>কীবোর্ড দিয়ে জুম করুন</span></div>
+          <div class="tip-row"><span>📅</span><span>তারিখ বেছে সংখ্যা দেখুন</span></div>
+          <div class="tip-row"><span>❮❯</span><span>বাটন বা কীবোর্ডে পাতা বদলান</span></div>
+          <div class="tip-row"><span>⛶</span><span>ফুলস্ক্রিনে পড়ুন</span></div>
+          <div class="tip-row"><span>⬇</span><span>PDF ডাউনলোড করুন</span></div>
+          <div class="tip-row"><span>📖</span><span>নিচে থাম্বনেইল থেকে যান</span></div>
         </div>
       </div>
 
@@ -336,17 +375,15 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
   </div>
 </div>
 
-<!-- FOOTER (exact from index.html) -->
+<!-- FOOTER -->
 <footer>
   <div class="wrap">
     <div class="fg">
       <div>
-        <div class="fl-logo">দৈনিক অনু<em>লি</em>পি</div>
+        <img src="assets/logo-dark.png" alt="দৈনিক অনুলিপি" class="footer-logo-img">
         <div class="fl-tag">সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে!</div>
-        <div class="fl-info">প্রতিষ্ঠাতা ও প্রধান প্রকাশক: অনিক অধিকারী<br>প্রতিষ্ঠাতা ও প্রধান সম্পাদক: মো: ফারহান শাহরিয়ার<br>© ২০২৬ দৈনিক অনুলিপি কর্তৃক সংরক্ষিত।<br><br><strong>জরুরি ঘোষণা:</strong><br>এই নিউজ পোর্টালটি বর্তমানে ‘পরীক্ষামূলক সম্প্রচার’ কার্যক্রম পরিচালনা করছে।
-আমরা সচেতনভাবে রাজনৈতিক সংবাদ এড়িয়ে চলি এবং শুধুমাত্র বিনোদন, তথ্য ও জনস্বার্থমূলক সংবাদ প্রকাশ করি।
-এখানে প্রকাশিত সংবাদের দায়ভার সংশ্লিষ্ট লেখকদের, পোর্টাল কর্তৃপক্ষের নয়।
-রেজিস্ট্রেশন প্রক্রিয়া এবং পূর্ণাঙ্গ সম্প্রচারে।</div>
+        <div class="fl-info">প্রতিষ্ঠাতা ও প্রধান প্রকাশক: অনিক অধিকারী<br>প্রতিষ্ঠাতা ও প্রধান সম্পাদক: মো: ফারহান শাহরিয়ার<br>© ২০২৬ দৈনিক অনুলিপি কর্তৃক সংরক্ষিত।<br><br><strong>জরুরি ঘোষণা:</strong><br>এই নিউজ পোর্টালটি বর্তমানে 'পরীক্ষামূলক সম্প্রচার' কার্যক্রম পরিচালনা করছে।
+আমরা সচেতনভাবে রাজনৈতিক সংবাদ এড়িয়ে চলি এবং শুধুমাত্র বিনোদন, তথ্য ও জনস্বার্থমূলক সংবাদ প্রকাশ করি।</div>
       </div>
       <div class="fc">
         <h5>বিভাগ</h5>
@@ -381,24 +418,28 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
 <div class="fs-overlay" id="fs-overlay">
   <div class="fs-topbar">
     <span class="fs-title" id="fs-title">ই-পেপার</span>
-    <div class="fs-zoom-bar">
-      <button class="z-btn" onclick="fsZoom(-0.2)" style="background:#1e1e1e;">−</button>
-      <span class="z-label" id="fs-zoom-label" style="background:#1e1e1e;color:#888;">100%</span>
-      <button class="z-btn" onclick="fsZoom(0.2)" style="background:#1e1e1e;">+</button>
+    <div class="fs-controls">
+      <button class="fs-btn" id="fs-prev" onclick="goPage(-1)" disabled>❮</button>
+      <span class="fs-pg" id="fs-pg">—</span>
+      <button class="fs-btn" id="fs-next" onclick="goPage(1)" disabled>❯</button>
     </div>
     <button class="fs-close" onclick="closeFullscreen()">✕ বন্ধ</button>
   </div>
-  <div class="fs-img-area">
-    <button class="fs-nav-btn left" id="fs-nav-left" onclick="goPage(-1)">❮</button>
-    <img id="fs-img" src="" alt="ই-পেপার" style="transition:transform .22s;">
-    <button class="fs-nav-btn right" id="fs-nav-right" onclick="goPage(1)">❯</button>
-  </div>
-  <div class="fs-bottom">
-    <span class="fs-pg" id="fs-pg">পাতা ১ / ৮</span>
+  <div class="fs-body" id="fs-body">
+    <button class="fs-nav left" id="fs-nav-left" onclick="goPage(-1)" disabled>❮</button>
+    <div class="fs-stage" id="fs-stage">
+      <div class="fs-page fs-left" id="fs-left-page">
+        <canvas id="fs-canvas-left"></canvas>
+      </div>
+      <div class="fs-page fs-right" id="fs-right-page">
+        <canvas id="fs-canvas-right"></canvas>
+      </div>
+    </div>
+    <button class="fs-nav right" id="fs-nav-right" onclick="goPage(1)" disabled>❯</button>
   </div>
 </div>
 
-<!-- CONTACT POPUP (exact from index.html) -->
+<!-- CONTACT POPUP -->
 <div id="contact-popup-overlay" onclick="closeContactPopup(event)" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);align-items:center;justify-content:center;">
   <div style="background:var(--sur);width:100%;max-width:420px;margin:16px;border-top:4px solid var(--red);box-shadow:0 20px 60px rgba(0,0,0,.35);animation:popIn .22s ease;max-height:90vh;overflow-y:auto;">
     <div style="padding:18px 20px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bdr);position:sticky;top:0;background:var(--sur);z-index:1;">
@@ -427,14 +468,14 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
           <div><div style="font-size:11px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;">Facebook</div><div style="font-size:14px;font-weight:700;">facebook.com/dainikanulipi</div></div>
         </a>
       </div>
-      <a href="https://dainikanulipi.github.io/da.com/#" target="_blank" rel="noopener" style="display:block;background:var(--red);color:#fff;text-align:center;padding:11px;font-size:14px;font-weight:700;font-family:'Noto Sans Bengali',sans-serif;text-decoration:none;" onmouseover="this.style.background='var(--dkred)'" onmouseout="this.style.background='var(--red)'">
+      <a href="https://dainikanulipi.github.io/da.com/" target="_blank" rel="noopener" style="display:block;background:var(--red);color:#fff;text-align:center;padding:11px;font-size:14px;font-weight:700;font-family:'Noto Sans Bengali',sans-serif;text-decoration:none;" onmouseover="this.style.background='var(--dkred)'" onmouseout="this.style.background='var(--red)'">
         🌐 ওয়েবসাইট ভিজিট করুন
       </a>
     </div>
   </div>
 </div>
 
-<!-- INFO POPUP (exact from index.html) -->
+<!-- INFO POPUP -->
 <div id="info-popup-overlay" onclick="closeInfoPopup(event)" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);align-items:center;justify-content:center;">
   <div style="background:var(--sur);width:100%;max-width:520px;margin:16px;border-top:4px solid var(--red);box-shadow:0 20px 60px rgba(0,0,0,.35);animation:popIn .22s ease;max-height:88vh;overflow-y:auto;">
     <div style="padding:18px 20px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bdr);position:sticky;top:0;background:var(--sur);z-index:1;">
@@ -449,24 +490,26 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
 </div>
 
 <script>
-/* ── CONFIG ── */
-const TOTAL_PAGES   = 4;
-const IMG_BASE_PATH = 'https://dainikanulipi.github.io/da.com/assets/epapers/';
-const IMG_EXT       = '.png';
+// ── PDF.js worker ──
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-/* ── STATE ── */
-let currentPage    = 1;
+// ── CONFIG ──
+const PDF_BASE_PATH = 'https://dainikanulipi.github.io/da.com/assets/epapers/';
+
+// ── STATE ──
+let pdfDoc       = null;
+let currentSpread = 1;   // left-page number of current spread (always odd or 1)
+let totalPages   = 0;
+let zoomScale    = 0.8;  // 0.8 = 80% of auto-fit (fixed)
+let isFS         = false;
 let currentDateStr = '';
-let zoomLevel      = 1;
-let fsZoomLevel    = 1;
-let isFullscreen   = false;
 
-/* ── DATE UTILS ── */
-function todayStr() {
+// ── DATE UTILS ──
+function todayStr(){
   const d=new Date(),dd=String(d.getDate()).padStart(2,'0'),mm=String(d.getMonth()+1).padStart(2,'0'),yy=String(d.getFullYear()).slice(-2);
   return `${dd}-${mm}-${yy}`;
 }
-function inputValToFolderStr(val) {
+function inputValToFolderStr(val){
   if(!val)return todayStr();
   const[y,m,d]=val.split('-');return `${d}-${m}-${y.slice(-2)}`;
 }
@@ -482,120 +525,191 @@ function folderStrToDisplayShort(s){
   const[dd,mm,yy]=s.split('-');
   return `${toBnDigits(dd)} ${months[parseInt(mm,10)-1]}, ${toBnDigits('20'+yy)}`;
 }
-function imgPath(dateStr,page){return `${IMG_BASE_PATH}${dateStr}/${page}${IMG_EXT}`;}
+function pdfPath(dateStr){return `${PDF_BASE_PATH}${dateStr}.pdf`;}
 
-/* ── LOAD EDITION ── */
+// ── SINGLE PAGE LOGIC ──
+// currentSpread now means the single current page number
+function spreadPages(pageNum){
+  return [pageNum, null]; // always single page
+}
+function nextSpread(cur){ return Math.min(cur+1, totalPages); }
+function prevSpread(cur){ return Math.max(cur-1, 1); }
+
+// ── RENDER PAGE TO CANVAS ──
+async function renderToCanvas(pageNum, canvas, maxW, maxH){
+  if(!pageNum || pageNum>totalPages){ canvas.width=0; canvas.height=0; return; }
+  const page = await pdfDoc.getPage(pageNum);
+  const vp0 = page.getViewport({scale:1});
+  const fitScale = Math.min(maxW/vp0.width, maxH/vp0.height);
+  let scale = fitScale * (zoomScale || 0.8);
+  const vp  = page.getViewport({scale});
+  canvas.width  = vp.width;
+  canvas.height = vp.height;
+  await page.render({canvasContext:canvas.getContext('2d'), viewport:vp}).promise;
+}
+
+// ── RENDER SPREAD ──
+async function renderSpread(){
+  if(!pdfDoc) return;
+  const [p1, p2] = spreadPages(currentSpread);
+  const area = document.getElementById('book-area');
+  const maxH = window.innerHeight * 0.72;
+  const maxW = (area.offsetWidth - 120);
+
+  await Promise.all([
+    renderToCanvas(p1, document.getElementById('canvas-left'),  maxW, maxH),
+    renderToCanvas(p2, document.getElementById('canvas-right'), maxW, maxH),
+  ]);
+
+  document.getElementById('pnum-left').textContent  = p1 ? toBnDigits(String(p1)) : '';
+  document.getElementById('pnum-right').textContent = p2 ? toBnDigits(String(p2)) : '';
+  document.getElementById('book-stage').classList.toggle('single-page', !p2);
+
+  updateNav();
+  updateIndicator();
+  updateThumbs();
+
+  // Fullscreen too
+  if(isFS) await renderFSSpread();
+}
+
+// ── FULLSCREEN RENDER ──
+async function renderFSSpread(){
+  const [p1,p2] = spreadPages(currentSpread);
+  const maxH = window.innerHeight - 90;
+  const maxW = (window.innerWidth - 120);
+  await Promise.all([
+    renderToCanvas(p1, document.getElementById('fs-canvas-left'),  maxW, maxH),
+    renderToCanvas(p2, document.getElementById('fs-canvas-right'), maxW, maxH),
+  ]);
+  document.getElementById('fs-stage').classList.toggle('single', !p2);
+  syncFSNav();
+  const [a]=spreadPages(currentSpread);
+  document.getElementById('fs-pg').textContent = `${toBnDigits(String(a))} / ${toBnDigits(String(totalPages))}`;
+  document.getElementById('fs-title').textContent = document.getElementById('ep-toolbar-title').textContent;
+}
+
+// ── NAV ──
+function goPage(delta){
+  const next = delta>0 ? nextSpread(currentSpread) : prevSpread(currentSpread);
+  if(next===currentSpread) return;
+  currentSpread=next;
+  showSpinner();
+  renderSpread().then(hideSpinner);
+}
+function jumpToPage(n){
+  currentSpread = Math.max(1, Math.min(n, totalPages));
+  showSpinner();
+  renderSpread().then(hideSpinner);
+}
+function updateNav(){
+  const atStart = currentSpread<=1;
+  const atEnd   = currentSpread>=totalPages;
+  ['btn-prev','nav-left'].forEach(id=>{ const el=document.getElementById(id); if(el)el.disabled=atStart; });
+  ['btn-next','nav-right'].forEach(id=>{ const el=document.getElementById(id); if(el)el.disabled=atEnd; });
+}
+function syncFSNav(){
+  const atStart=currentSpread<=1, atEnd=currentSpread>=totalPages;
+  ['fs-prev','fs-nav-left'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=atStart;});
+  ['fs-next','fs-nav-right'].forEach(id=>{const el=document.getElementById(id);if(el)el.disabled=atEnd;});
+}
+function updateIndicator(){
+  const [p1]=spreadPages(currentSpread);
+  const txt = `${toBnDigits(String(p1))} / ${toBnDigits(String(totalPages))}`;
+  document.getElementById('page-indicator').textContent=txt;
+}
+
+// ── ZOOM (fixed at 80%) ──
+function updateZoomLabel(){ /* zoom locked */ }
+
+// ── SPINNER ──
+function showSpinner(){ document.getElementById('ep-spinner').style.display='flex'; document.getElementById('book-stage').style.opacity='0.3'; }
+function hideSpinner(){ document.getElementById('ep-spinner').style.display='none'; document.getElementById('book-stage').style.opacity='1'; }
+function showError(path){ document.getElementById('ep-error').style.display='flex'; document.getElementById('ep-error-path').textContent=path; document.getElementById('ep-spinner').style.display='none'; document.getElementById('book-stage').style.opacity='0'; }
+function hideError(){ document.getElementById('ep-error').style.display='none'; }
+
+// ── THUMBNAILS ──
+async function buildThumbs(){
+  const row=document.getElementById('thumb-row'); row.innerHTML='';
+  for(let i=1;i<=totalPages;i++){
+    const item=document.createElement('div'); item.className='thumb-item'; item.dataset.page=i;
+    const canvas=document.createElement('canvas'); canvas.className='th-canvas';
+    const num=document.createElement('div'); num.className='thumb-num'; num.textContent=toBnDigits(String(i));
+    item.appendChild(canvas); item.appendChild(num);
+    item.onclick=(()=>{const pg=i;return()=>jumpToPage(pg);})();
+    row.appendChild(item);
+    // Render thumbnail async
+    (async()=>{
+      const page=await pdfDoc.getPage(i);
+      const vp=page.getViewport({scale:0.18});
+      canvas.width=vp.width; canvas.height=vp.height;
+      await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;
+      canvas.style.width='68px'; canvas.style.height='100px';
+    })();
+  }
+  updateThumbs();
+}
+function updateThumbs(){
+  const [p1,p2]=spreadPages(currentSpread);
+  document.querySelectorAll('.thumb-item').forEach(el=>{
+    const p=parseInt(el.dataset.page);
+    el.classList.toggle('active', p===p1);
+  });
+}
+
+// ── FULLSCREEN ──
+function openFullscreen(){
+  isFS=true;
+  document.getElementById('fs-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  renderFSSpread();
+}
+function closeFullscreen(){
+  isFS=false;
+  document.getElementById('fs-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+// ── LOAD EDITION ──
 function loadEdition(dateStr){
-  if(!dateStr){const val=document.getElementById('ed-date-input').value;dateStr=val?inputValToFolderStr(val):todayStr();}
-  currentDateStr=dateStr;currentPage=1;zoomLevel=1;updateZoomLabel();
+  if(!dateStr){ const val=document.getElementById('ed-date-input').value; dateStr=val?inputValToFolderStr(val):todayStr(); }
+  currentDateStr=dateStr;
+  const path=pdfPath(dateStr);
   const disp=folderStrToDisplay(dateStr);
+
   document.getElementById('ed-info').textContent=disp;
   document.getElementById('strip-date').textContent=disp;
   document.getElementById('ep-toolbar-title').textContent=`দৈনিক অনুলিপি — ${disp}`;
   document.title=`দৈনিক অনুলিপি ই-পেপার — ${disp}`;
+
+  const dlBtn=document.getElementById('pdf-download-btn');
+  dlBtn.href=path; dlBtn.download=`দৈনিক-অনুলিপি-${dateStr}.pdf`; dlBtn.style.display='inline-block';
+
   document.querySelectorAll('.arch-item').forEach(el=>el.classList.toggle('today',el.dataset.date===dateStr));
-  buildThumbs();renderPage();updateNav();
+
+  // Update iframe with today's PDF via Google Docs viewer
+  const encoded=encodeURIComponent(path);
+  document.getElementById('epaper-iframe').src=`https://docs.google.com/viewer?embedded=true&url=${encoded}`;
 }
 
-/* ── RENDER PAGE ── */
-function renderPage(){
-  const img=document.getElementById('ep-main-img'),spinner=document.getElementById('ep-spinner'),errDiv=document.getElementById('ep-error'),path=imgPath(currentDateStr,currentPage);
-  spinner.style.display='flex';errDiv.style.display='none';img.style.display='none';
-  img.classList.remove('loaded-img');img.classList.add('loading-img');img.src=path;
-  document.getElementById('page-indicator').textContent=`পাতা ${toBnDigits(currentPage)} / ${toBnDigits(TOTAL_PAGES)}`;
-  document.getElementById('strip-total').textContent=toBnDigits(TOTAL_PAGES);
-  if(isFullscreen){
-    document.getElementById('fs-img').src=path;
-    document.getElementById('fs-title').textContent=`দৈনিক অনুলিপি — পাতা ${currentPage} / ${TOTAL_PAGES}`;
-    document.getElementById('fs-pg').textContent=`পাতা ${toBnDigits(currentPage)} / ${toBnDigits(TOTAL_PAGES)}`;
-    syncFsNav();
-  }
-  document.querySelectorAll('.thumb-item').forEach((el,i)=>el.classList.toggle('active',i+1===currentPage));
-}
-function onImgLoad(){
-  const img=document.getElementById('ep-main-img'),spinner=document.getElementById('ep-spinner');
-  spinner.style.display='none';img.style.display='block';
-  img.classList.remove('loading-img');img.classList.add('loaded-img');img.style.transform=`scale(${zoomLevel})`;
-}
-function onImgError(){
-  const img=document.getElementById('ep-main-img'),spinner=document.getElementById('ep-spinner'),errDiv=document.getElementById('ep-error');
-  spinner.style.display='none';img.style.display='none';errDiv.style.display='flex';
-  document.getElementById('ep-error-path').textContent=imgPath(currentDateStr,currentPage);
-}
-
-/* ── NAV ── */
-function goPage(delta){const next=currentPage+delta;if(next<1||next>TOTAL_PAGES)return;currentPage=next;zoomLevel=1;updateZoomLabel();renderPage();updateNav();}
-function jumpToPage(n){if(n<1||n>TOTAL_PAGES)return;currentPage=n;zoomLevel=1;updateZoomLabel();renderPage();updateNav();}
-function updateNav(){
-  const pp=document.getElementById('btn-prev'),np=document.getElementById('btn-next'),nl=document.getElementById('nav-left'),nr=document.getElementById('nav-right');
-  pp.disabled=nl.disabled=currentPage<=1;np.disabled=nr.disabled=currentPage>=TOTAL_PAGES;
-}
-
-/* ── ZOOM ── */
-function zoomIn(){zoomLevel=Math.min(3,zoomLevel+0.25);applyZoom();}
-function zoomOut(){zoomLevel=Math.max(0.5,zoomLevel-0.25);applyZoom();}
-function zoomReset(){zoomLevel=1;applyZoom();}
-function applyZoom(){document.getElementById('ep-main-img').style.transform=`scale(${zoomLevel})`;updateZoomLabel();}
-function updateZoomLabel(){document.getElementById('zoom-label').textContent=Math.round(zoomLevel*100)+'%';}
-
-document.getElementById('ep-img-area').addEventListener('wheel',e=>{e.preventDefault();if(e.deltaY<0)zoomIn();else zoomOut();},{passive:false});
-document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowRight'||e.key==='ArrowDown')goPage(1);
-  if(e.key==='ArrowLeft'||e.key==='ArrowUp')goPage(-1);
-  if(e.key==='Escape'){if(isFullscreen)closeFullscreen();closeContactPopup();closeInfoPopup();}
-  if(e.key==='+')zoomIn();if(e.key==='-')zoomOut();if(e.key==='0')zoomReset();
-});
-
-/* ── TOUCH SWIPE ── */
-let touchStartX=0;
-const imgArea=document.getElementById('ep-img-area');
-imgArea.addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;});
-imgArea.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-touchStartX;if(Math.abs(dx)>50){if(dx<0)goPage(1);else goPage(-1);}});
-
-/* ── THUMBNAILS ── */
-function buildThumbs(){
-  const row=document.getElementById('thumb-row');row.innerHTML='';
-  for(let i=1;i<=TOTAL_PAGES;i++){
-    const item=document.createElement('div');item.className='thumb-item'+(i===currentPage?' active':'');item.onclick=()=>jumpToPage(i);
-    const img=document.createElement('img');img.src=imgPath(currentDateStr,i);img.alt=`পাতা ${i}`;img.className='th-loading';
-    img.onload=()=>{img.classList.remove('th-loading');img.classList.add('th-loaded');};img.onerror=()=>{img.style.opacity='0.05';};
-    const num=document.createElement('div');num.className='thumb-num';num.textContent=toBnDigits(String(i));
-    item.appendChild(img);item.appendChild(num);row.appendChild(item);
-  }
-}
-
-/* ── FULLSCREEN ── */
-function openFullscreen(){
-  isFullscreen=true;document.getElementById('fs-overlay').classList.add('open');
-  document.getElementById('fs-img').src=imgPath(currentDateStr,currentPage);
-  document.getElementById('fs-title').textContent=`দৈনিক অনুলিপি — পাতা ${currentPage} / ${TOTAL_PAGES}`;
-  document.getElementById('fs-pg').textContent=`পাতা ${toBnDigits(currentPage)} / ${toBnDigits(TOTAL_PAGES)}`;
-  fsZoomLevel=1;document.getElementById('fs-img').style.transform='scale(1)';document.getElementById('fs-zoom-label').textContent='100%';
-  syncFsNav();document.body.style.overflow='hidden';
-}
-function closeFullscreen(){isFullscreen=false;document.getElementById('fs-overlay').classList.remove('open');document.body.style.overflow='';}
-function syncFsNav(){document.getElementById('fs-nav-left').disabled=currentPage<=1;document.getElementById('fs-nav-right').disabled=currentPage>=TOTAL_PAGES;}
-function fsZoom(delta){fsZoomLevel=Math.min(4,Math.max(0.5,fsZoomLevel+delta));document.getElementById('fs-img').style.transform=`scale(${fsZoomLevel})`;document.getElementById('fs-zoom-label').textContent=Math.round(fsZoomLevel*100)+'%';}
-
-/* ── ARCHIVE SIDEBAR ── */
+// ── ARCHIVE ──
 function buildArchive(){
-  const list=document.getElementById('arch-list');list.innerHTML='';
-  const todayS=todayStr();
-  list.appendChild(makeArchItem(todayS,true));
+  const list=document.getElementById('arch-list'); list.innerHTML='';
+  list.appendChild(makeArchItem(todayStr(),true));
   for(let i=1;i<=13;i++){
-    const d=new Date();d.setDate(d.getDate()-i);
+    const d=new Date(); d.setDate(d.getDate()-i);
     const dd=String(d.getDate()).padStart(2,'0'),mm=String(d.getMonth()+1).padStart(2,'0'),yy=String(d.getFullYear()).slice(-2);
     list.appendChild(makeArchItem(`${dd}-${mm}-${yy}`,false));
   }
 }
 function makeArchItem(str,isToday){
-  const item=document.createElement('div');item.className='arch-item'+(isToday?' today':'');item.dataset.date=str;
-  item.innerHTML=`<div class="arch-icon">${isToday?'📰':'🗞️'}</div><div><div class="arch-date">${folderStrToDisplayShort(str)}</div><div class="arch-sub">${isToday?'আজকের সংখ্যা':toBnDigits(String(TOTAL_PAGES))+' পাতা'}</div></div>`;
-  item.onclick=()=>{document.getElementById('ed-date-input').value=folderStrToInputVal(str);loadEdition(str);window.scrollTo({top:0,behavior:'smooth'});};
+  const item=document.createElement('div'); item.className='arch-item'+(isToday?' today':''); item.dataset.date=str;
+  item.innerHTML=`<div class="arch-icon">${isToday?'📰':'🗞️'}</div><div><div class="arch-date">${folderStrToDisplayShort(str)}</div><div class="arch-sub">${isToday?'আজকের সংখ্যা':'পুরনো সংখ্যা'}</div></div>`;
+  item.onclick=()=>{ document.getElementById('ed-date-input').value=folderStrToInputVal(str); loadEdition(str); window.scrollTo({top:0,behavior:'smooth'}); };
   return item;
 }
 
-/* ── THEME ── */
+// ── THEME ──
 function toggleTheme(){
   const html=document.documentElement,isDark=html.getAttribute('data-theme')==='dark';
   html.setAttribute('data-theme',isDark?'light':'dark');
@@ -608,7 +722,7 @@ function applyTheme(){
   document.getElementById('theme-btn').textContent=saved==='dark'?'☀️':'🌙';
 }
 
-/* ── TOPBAR DATE ── */
+// ── TOPBAR DATE ──
 function setTopbarDate(){
   const d=new Date();
   const months=['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
@@ -616,7 +730,22 @@ function setTopbarDate(){
   document.getElementById('tbar-date').textContent=`${days[d.getDay()]}, ${toBnDigits(String(d.getDate()))} ${months[d.getMonth()]} ${toBnDigits(String(d.getFullYear()))}`;
 }
 
-/* ── CONTACT POPUP ── */
+// ── KEYBOARD ──
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') goPage(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')    goPage(-1);
+  if(e.key==='Escape'){ closeFullscreen(); closeContactPopup(); closeInfoPopup(); }
+});
+
+// ── TOUCH SWIPE ──
+let touchStartX=0;
+document.getElementById('book-area').addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;},{passive:true});
+document.getElementById('book-area').addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-touchStartX;
+  if(Math.abs(dx)>55){ if(dx<0)goPage(1); else goPage(-1); }
+},{passive:true});
+
+// ── CONTACT POPUP ──
 function openContactPopup(type){
   document.getElementById('popup-title').textContent=type==='বিজ্ঞাপন'?'📢 বিজ্ঞাপন দিন':'📬 যোগাযোগ করুন';
   document.getElementById('contact-popup-overlay').style.display='flex';
@@ -628,17 +757,15 @@ function closeContactPopup(e){
   document.body.style.overflow='';
 }
 
-/* ── INFO POPUP ── */
+// ── INFO POPUP ──
 const INFO_CONTENT={
   about:{
     title:'🗞️ আমাদের সম্পর্কে',
     body:`
-      <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--bdr);">
-        <div>
-          <div style="font-size:28px;font-weight:700;font-family:'Noto Serif Bengali',serif;color:var(--txt);letter-spacing:-1px;">দৈনিক অনু<span style="color:var(--red)">লি</span>পি</div>
-          <div style="font-size:11px;color:var(--txt3);letter-spacing:1px;margin-top:2px;font-family:'Noto Sans Bengali',sans-serif;">DAINIK ANULIPI · THE DAILY ANULIPI</div>
-          <div style="font-size:12px;color:var(--txt2);font-style:italic;margin-top:3px;">সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে!</div>
-        </div>
+      <div style="margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--bdr);text-align:center;">
+        <img src="assets/logo.png" alt="দৈনিক অনুলিপি" class="about-logo about-logo-light">
+        <img src="assets/logo-dark.png" alt="দৈনিক অনুলিপি" class="about-logo about-logo-dark">
+        <div style="font-size:12px;color:var(--txt2);font-style:italic;margin-top:8px;">সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে!</div>
       </div>
       <div style="background:var(--sur2);border-left:4px solid var(--red);padding:14px 16px;margin-bottom:18px;">
         <div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px;font-family:'Noto Sans Bengali',sans-serif;">⚠️ জরুরি ঘোষণা</div>
@@ -654,8 +781,10 @@ const INFO_CONTENT={
           <div style="font-size:13.5px;font-weight:700;">মো: ফারহান শাহরিয়ার</div>
         </div>
       </div>
-      <p style="font-size:14px;line-height:1.9;color:var(--txt2);margin-bottom:14px;">দৈনিক অনুলিপি একটি অনলাইন সংবাদ পোর্টাল যা সত্য ও নিরপেক্ষ সংবাদ পরিবেশনের লক্ষ্যে যাত্রা শুরু করেছে।</p>
-      <div style="text-align:center;padding-top:14px;border-top:1px solid var(--bdr);">
+      <div style="padding:14px 0 18px;border-bottom:1px solid var(--bdr);margin-bottom:14px;">
+        <p style="font-size:13.5px;line-height:1.9;color:var(--txt2);margin:0;">দৈনিক অনুলিপি একটি অনলাইন সংবাদ পোর্টাল যা সত্য ও নিরেপক্ষ সংবাদ পরিবেশনের লক্ষ্যে যাত্রা শুরু করেছে।</p>
+      </div>
+      <div style="text-align:center;padding-top:4px;">
         <div style="font-size:11px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;">© ২০২৬ দৈনিক অনুলিপি কর্তৃক সংরক্ষিত</div>
       </div>`
   },
@@ -672,24 +801,17 @@ const INFO_CONTENT={
           <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:6px;font-family:'Noto Sans Bengali',sans-serif;">🍪 কুকিজ ব্যবহার</div>
           <p style="font-size:14px;line-height:1.85;color:var(--txt2);margin:0;">থিম ও ভাষা পছন্দ সংরক্ষণের জন্য লোকাল স্টোরেজ ব্যবহার করা হয়।</p>
         </div>
-        <div style="padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--bdr);">
-          <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:6px;font-family:'Noto Sans Bengali',sans-serif;">📰 বিষয়বস্তুর দায়বদ্ধতা</div>
-          <p style="font-size:14px;line-height:1.85;color:var(--txt2);margin:0;">পোর্টালে প্রকাশিত সংবাদ ও মতামতের দায়ভার সংশ্লিষ্ট লেখক ও রিপোর্টারদের।</p>
-        </div>
         <div>
           <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:6px;font-family:'Noto Sans Bengali',sans-serif;">✉️ যোগাযোগ</div>
-          <p style="font-size:14px;line-height:1.85;color:var(--txt2);margin:0;">গোপনীয়তা সংক্রান্ত যেকোনো প্রশ্নের জন্য: <a href="mailto:dainikanulipi@gmail.com" style="color:var(--red);font-weight:700;">dainikanulipi@gmail.com</a></p>
+          <p style="font-size:14px;line-height:1.85;color:var(--txt2);margin:0;"><a href="mailto:dainikanulipi@gmail.com" style="color:var(--red);font-weight:700;">dainikanulipi@gmail.com</a></p>
         </div>
-      </div>
-      <div style="text-align:center;padding-top:16px;margin-top:16px;border-top:1px solid var(--bdr);">
-        <div style="font-size:11px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;">© ২০২৬ দৈনিক অনুলিপি — সর্বস্বত্ব সংরক্ষিত</div>
       </div>`
   }
 };
 function openInfoPopup(type){
-  const content=INFO_CONTENT[type];if(!content)return;
-  document.getElementById('info-popup-title').textContent=content.title;
-  document.getElementById('info-popup-body').innerHTML=content.body;
+  const c=INFO_CONTENT[type]; if(!c)return;
+  document.getElementById('info-popup-title').textContent=c.title;
+  document.getElementById('info-popup-body').innerHTML=c.body;
   document.getElementById('info-popup-overlay').style.display='flex';
   document.body.style.overflow='hidden';
 }
@@ -699,13 +821,13 @@ function closeInfoPopup(e){
   document.body.style.overflow='';
 }
 
-/* ── INIT ── */
+// ── INIT ──
 function init(){
-  applyTheme();setTopbarDate();
+  applyTheme(); setTopbarDate();
   const today=new Date();
   document.getElementById('ed-date-input').value=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-  const params=new URLSearchParams(window.location.search);
   buildArchive();
+  const params=new URLSearchParams(window.location.search);
   loadEdition(params.get('date')||todayStr());
 }
 document.addEventListener('DOMContentLoaded',init);
