@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>অ্যাডমিন প্যানেল | দৈনিক অনুলিপি</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -39,6 +40,16 @@ input,select,textarea{font-family:inherit;}
 }
 .lock-logo{font-family:'Noto Serif Bengali',serif;font-size:26px;font-weight:700;margin-bottom:4px;}
 .lock-logo em{color:var(--red);font-style:normal;}
+.logo-img{height:54px;width:auto;max-width:154px;object-fit:contain;display:block;}
+.logo-img-light{display:block;}
+.logo-img-dark{display:none;}
+[data-theme=dark] .logo-img-light{display:none;}
+[data-theme=dark] .logo-img-dark{display:block;}
+.sb-logo-img{height:36px;width:auto;max-width:120px;object-fit:contain;display:block;}
+.sb-logo-light{display:block;}
+.sb-logo-dark{display:none;}
+[data-theme=dark] .sb-logo-light{display:none;}
+[data-theme=dark] .sb-logo-dark{display:block;}
 .lock-sub{font-size:11px;color:var(--txt3);letter-spacing:1px;margin-bottom:18px;}
 .lock-shield{font-size:40px;margin-bottom:10px;}
 .lock-title{font-size:17px;font-weight:700;margin-bottom:4px;}
@@ -454,8 +465,8 @@ tr:last-child td{border-bottom:none;}
 <!-- LOCK -->
 <div id="lock">
   <div class="lock-box">
-    <div class="lock-logo">দৈনিক অনু<em>লি</em>পি</div>
-    <div class="lock-sub">DAINIK ANULIPI · ADMIN</div>
+    <img src="assets/logo.png"      alt="দৈনিক অনুলিপি" class="logo-img logo-img-light" style="margin:0 auto 4px;">
+    <img src="assets/logo-dark.png" alt="দৈনিক অনুলিপি" class="logo-img logo-img-dark" style="margin:0 auto 4px;">
     <div class="lock-shield">🛡️</div>
     <div class="lock-title">অ্যাডমিন প্যানেল</div>
     <div class="lock-desc">শুধুমাত্র অনুমোদিত অ্যাডমিনদের জন্য।</div>
@@ -484,7 +495,8 @@ tr:last-child td{border-bottom:none;}
   <!-- SIDEBAR -->
   <div class="sidebar" id="sidebar">
     <div class="sb-logo">
-      <div class="sbl">দৈনিক অনু<em>লি</em>পি</div>
+      <img src="assets/logo.png"      alt="দৈনিক অনুলিপি" class="sb-logo-img sb-logo-light">
+      <img src="assets/logo-dark.png" alt="দৈনিক অনুলিপি" class="sb-logo-img sb-logo-dark">
       <div class="sbsub">Admin Panel</div>
     </div>
     <nav class="sb-nav">
