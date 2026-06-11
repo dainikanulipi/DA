@@ -141,11 +141,13 @@ button{font-family:inherit;cursor:pointer;}
 
 /* ── HERO ── */
 .hero-grid{display:grid;grid-template-columns:1.9fr 1fr;gap:13px;margin-bottom:20px;}
-.hm{background:var(--sur);overflow:hidden;cursor:pointer;transition:box-shadow .2s,background .3s;}
+.hm{background:var(--sur);overflow:hidden;cursor:pointer;transition:box-shadow .2s,background .3s;display:flex;flex-direction:column;}
 .hm:hover{box-shadow:0 5px 24px var(--shd);}
-.hm-img{height:295px;overflow:hidden;}
-.hm-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
-.hm:hover .hm-img img{transform:scale(1.04);}
+.hm-img{position:relative;width:100%;overflow:hidden;flex-shrink:0;}
+.hm-img::before{content:'';display:block;padding-top:56.25%;}
+.hm-img img,.hm-img-inner{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+.hm-img .img-fallback{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:32px;}
+.hm:hover .hm-img img,.hm:hover .hm-img-inner{transform:scale(1.04);}
 .hm-body{padding:14px 16px 16px;}
 .hm-body h2{font-size:21px;font-weight:700;line-height:1.6;margin-bottom:7px;}
 .hm-body .ex{font-size:13px;color:var(--txt2);line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
@@ -162,10 +164,11 @@ button{font-family:inherit;cursor:pointer;}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:24px;}
 .nc{background:var(--sur);overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s,background .3s;display:flex;flex-direction:column;}
 .nc:hover{transform:translateY(-3px);box-shadow:0 7px 22px var(--shd);}
-.nc-img{overflow:hidden;height:172px;}
-.nc-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
-.nc:hover .nc-img img{transform:scale(1.06);}
-.nc-nimg{height:172px;background:var(--sur3);display:flex;align-items:center;justify-content:center;font-size:30px;}
+.nc-img{position:relative;width:100%;overflow:hidden;}
+.nc-img::before{content:'';display:block;padding-top:56.25%;}
+.nc-img img,.nc-img-inner{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+.nc-img .img-fallback{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:30px;background:var(--sur3);}
+.nc:hover .nc-img img,.nc:hover .nc-img-inner{transform:scale(1.06);}
 .nc-body{padding:10px 12px 13px;flex:1;display:flex;flex-direction:column;}
 .nc-body h4{font-size:14.5px;font-weight:700;line-height:1.55;margin-bottom:4px;flex:1;}
 .nc-body .ex{font-size:12px;color:var(--txt2);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
@@ -194,7 +197,9 @@ button{font-family:inherit;cursor:pointer;}
 .art-hd h1{font-size:26px;font-weight:700;line-height:1.65;margin-bottom:11px;}
 .art-meta-row{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--txt2);font-family:'Noto Sans Bengali',sans-serif;margin-bottom:11px;}
 .art-lead{font-size:15.5px;color:var(--txt2);line-height:1.85;font-style:italic;border-inline-start:4px solid var(--red);padding-inline-start:13px;}
-.art-hero{width:100%;max-height:450px;object-fit:cover;}
+.art-img-card{padding:0 !important;position:relative;}
+.art-hero-wrap{width:100%;overflow:hidden;line-height:0;}
+.art-hero{width:100%;height:auto;max-height:520px;object-fit:cover;display:block;aspect-ratio:16/9;}
 .art-caption{font-size:11px;color:var(--txt3);text-align:center;padding:4px 10px 11px;font-style:italic;font-family:'Noto Sans Bengali',sans-serif;}
 .art-body{background:var(--sur);padding:20px;transition:background .3s;word-break:break-word;overflow-wrap:anywhere;}
 .art-lead{font-size:15.5px;color:var(--txt2);line-height:1.85;font-style:italic;border-inline-start:4px solid var(--red);padding-inline-start:13px;word-break:break-word;overflow-wrap:anywhere;}
@@ -216,12 +221,13 @@ button{font-family:inherit;cursor:pointer;}
 /* SIDEBAR */
 .sidebar-w{background:var(--sur);padding:13px;margin-bottom:13px;transition:background .3s;}
 .sw-head{font-size:13px;font-weight:700;border-bottom:2px solid var(--red);padding-bottom:6px;margin-bottom:10px;font-family:'Noto Sans Bengali',sans-serif;}
-.sw-item{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--bdr);cursor:pointer;}
+.sw-item{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--bdr);cursor:pointer;min-width:0;}
 .sw-item:last-child{border-bottom:none;padding-bottom:0;}
 .sw-item:hover h6{color:var(--red);}
-.sw-thumb{width:62px;height:48px;object-fit:cover;flex-shrink:0;}
+.sw-thumb{width:62px;height:48px;object-fit:cover;flex-shrink:0;overflow:hidden;display:block;}
 .sw-nothumb{width:62px;height:48px;background:var(--sur3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px;}
-.sw-item h6{font-size:12px;font-weight:600;line-height:1.45;transition:color .2s;}
+.sw-item>div{min-width:0;flex:1;}
+.sw-item h6{font-size:12px;font-weight:600;line-height:1.45;transition:color .2s;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;word-break:break-word;}
 
 /* BACK */
 .back{display:inline-flex;align-items:center;gap:5px;color:var(--red);font-weight:700;font-size:12.5px;cursor:pointer;margin-bottom:11px;padding:4px 0;font-family:'Noto Sans Bengali',sans-serif;transition:gap .2s;border:none;background:none;}
@@ -241,24 +247,76 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
 
 
 /* ── AD SLOTS ── */
-.ad-slot{background:var(--sur);border:1px dashed var(--bdr);text-align:center;padding:10px;margin-bottom:20px;transition:background .3s,border-color .3s;overflow:hidden;position:relative;}
-.ad-slot .ad-label{font-size:9px;color:var(--txt3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;font-family:'Noto Sans Bengali',sans-serif;}
-.ad-banner{width:100%;min-height:90px;display:flex;align-items:center;justify-content:center;}
-.ad-sidebar{width:100%;min-height:250px;display:flex;align-items:center;justify-content:center;}
-.ad-placeholder{font-size:12px;color:var(--txt3);font-style:italic;}
+.ad-slot{
+  background:var(--sur);
+  border:1px dashed var(--bdr);
+  text-align:center;
+  margin-bottom:20px;
+  transition:background .3s,border-color .3s;
+  overflow:hidden;
+  position:relative;
+  padding:0;
+}
+.ad-slot .ad-label{
+  font-size:9px;color:var(--txt3);letter-spacing:1px;
+  text-transform:uppercase;padding:5px 0 3px;
+  font-family:'Noto Sans Bengali',sans-serif;
+  line-height:1;
+}
 
-/* ── IMAGE CLASSES (replacing inline height styles) ── */
-.hm-img-inner{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
-.hm:hover .hm-img-inner{transform:scale(1.04);}
-.nc-img-inner{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
-.nc:hover .nc-img-inner{transform:scale(1.06);}
+/* Leaderboard banner: 728×90 — home & category pages */
+.ad-banner{
+  width:100%;
+  max-width:728px;
+  margin:0 auto;
+  aspect-ratio:728/90;
+  overflow:hidden;
+  position:relative;
+  display:block;
+}
+.ad-banner a{display:block;width:100%;height:100%;}
+.ad-banner img{width:100%;height:100%;object-fit:fill;display:block;}
+.ad-banner-ph{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  background:var(--sur2);
+}
+
+/* Sidebar rectangle: 300×250 — article pages */
+.ad-sidebar{
+  width:100%;
+  max-width:300px;
+  margin:0 auto;
+  aspect-ratio:300/250;
+  overflow:hidden;
+  position:relative;
+  display:block;
+}
+.ad-sidebar a{display:block;width:100%;height:100%;}
+.ad-sidebar img{width:100%;height:100%;object-fit:fill;display:block;}
+.ad-sidebar-ph{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  background:var(--sur2);
+}
+
+.ad-ph-icon{font-size:20px;opacity:.35;}
+.ad-ph-txt{font-size:11px;color:var(--txt3);font-style:italic;font-family:'Noto Sans Bengali',sans-serif;}
+.ad-ph-size{font-size:9px;color:var(--txt3);opacity:.55;font-family:'Noto Sans Bengali',sans-serif;letter-spacing:.5px;}
+
+@media(max-width:600px){
+  .ad-slot{margin-bottom:14px;}
+  /* On very small screens banner gets too short — set a min height */
+  .ad-banner{min-height:44px;}
+}
+
+/* img-fallback for no-image state */
 .img-fallback{width:100%;height:100%;background:var(--sur3);display:flex;align-items:center;justify-content:center;font-size:32px;}
 
 /* ── ART-LAYOUT COLUMNS ── */
 .art-layout{display:grid;grid-template-columns:1fr 305px;gap:15px;align-items:start;}
 .art-main-col{min-width:0;overflow:hidden;word-break:break-word;overflow-wrap:anywhere;}
 .art-sidebar-col{min-width:0;}
-.art-img-card{padding:0 !important;}
 
 /* ── RESPONSIVE ── */
 
@@ -270,7 +328,6 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
   .art-sidebar-col{display:none;} /* hide sidebar on tablet — show related articles instead */
   .fg{grid-template-columns:1fr 1fr;}
   .logo-bn{font-size:36px;}
-  .hm-img{height:260px;}
 }
 
 /* Small tablet / large phone: 600px–768px */
@@ -284,7 +341,6 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
   .logo-tag{font-size:12px;}
   .epaper-btn{padding:6px 12px;font-size:13px;}
   .cards{grid-template-columns:repeat(2,1fr);}
-  .nc-img,.nc-nimg{height:150px;}
   .art-hd h1{font-size:20px;}
   .art-body p{font-size:15px;}
   .share-row{gap:5px;}
@@ -312,7 +368,6 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
   .ti{font-size:12px;}
 
   .hero-grid{grid-template-columns:1fr;}
-  .hm-img{height:200px;}
   .hm-body{padding:12px;}
   .hm-body h2{font-size:16px;line-height:1.5;}
   .hm-body .ex{font-size:12px;}
@@ -322,7 +377,6 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
   .sc-body h4{font-size:12.5px;}
 
   .cards{grid-template-columns:1fr;}
-  .nc-img,.nc-nimg{height:160px;}
   .nc-body h4{font-size:13.5px;}
   .nc-body .ex{font-size:12px;}
 
@@ -335,7 +389,6 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
   .art-hd h1{font-size:18px;line-height:1.55;}
   .art-meta-row{gap:8px;font-size:11.5px;}
   .art-lead{font-size:14px;line-height:1.7;padding-inline-start:10px;}
-  .art-hero{max-height:240px;width:100%;object-fit:cover;}
   .art-caption{font-size:10.5px;padding:4px 10px 9px;}
   .art-body{padding:12px;}
   .art-body p{font-size:14.5px;line-height:2;}
@@ -360,13 +413,11 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
   footer{padding:20px 0 0;}
 
   .page{padding:12px 0 40px;}
-  .ad-slot{padding:8px;}
 }
 
 /* Extra small: ≤380px */
 @media(max-width:380px){
   .logo-bn{font-size:22px;}
-  .hm-img{height:175px;}
   .hm-body h2{font-size:15px;}
   .art-hd h1{font-size:16px;}
   .art-hd{padding:11px 10px;}
@@ -781,26 +832,18 @@ let _sidebarIdx = 0;
 function adBanner(id='') {
   const ad = BANNER_ADS[_bannerIdx % BANNER_ADS.length];
   _bannerIdx++;
-  return `<div class="ad-slot" id="ad-${id}">
-    <div class="ad-label">বিজ্ঞাপন · Advertisement</div>
-    <div class="ad-banner">
-      <a href="${ad.link}" target="_blank" rel="noopener">
-        <img src="${ad.img}" alt="${ad.alt}" style="max-width:100%;height:auto;display:block;margin:0 auto;">
-      </a>
-    </div>
-  </div>`;
+  const inner = ad.img
+    ? `<a href="${ad.link}" target="_blank" rel="noopener"><img src="${ad.img}" alt="${ad.alt}" onerror="this.closest('.ad-banner').innerHTML='<div class=ad-banner-ph><div class=ad-ph-icon>📢</div><div class=ad-ph-txt>বিজ্ঞাপন · Advertisement</div><div class=ad-ph-size>728 × 90</div></div>'"></a>`
+    : `<div class="ad-banner-ph"><div class="ad-ph-icon">📢</div><div class="ad-ph-txt">বিজ্ঞাপন · Advertisement</div><div class="ad-ph-size">728 × 90</div></div>`;
+  return `<div class="ad-slot" id="ad-${id}"><div class="ad-label">বিজ্ঞাপন · Advertisement</div><div class="ad-banner">${inner}</div></div>`;
 }
 function adSidebar(id='') {
   const ad = SIDEBAR_ADS[_sidebarIdx % SIDEBAR_ADS.length];
   _sidebarIdx++;
-  return `<div class="ad-slot" id="ad-sb-${id}">
-    <div class="ad-label">বিজ্ঞাপন · Advertisement</div>
-    <div class="ad-sidebar">
-      <a href="${ad.link}" target="_blank" rel="noopener">
-        <img src="${ad.img}" alt="${ad.alt}" style="max-width:100%;height:auto;display:block;margin:0 auto;">
-      </a>
-    </div>
-  </div>`;
+  const inner = ad.img
+    ? `<a href="${ad.link}" target="_blank" rel="noopener"><img src="${ad.img}" alt="${ad.alt}" onerror="this.closest('.ad-sidebar').innerHTML='<div class=ad-sidebar-ph><div class=ad-ph-icon>📢</div><div class=ad-ph-txt>বিজ্ঞাপন · Advertisement</div><div class=ad-ph-size>300 × 250</div></div>'"></a>`
+    : `<div class="ad-sidebar-ph"><div class="ad-ph-icon">📢</div><div class="ad-ph-txt">বিজ্ঞাপন · Advertisement</div><div class="ad-ph-size">300 × 250</div></div>`;
+  return `<div class="ad-slot" id="ad-sb-${id}"><div class="ad-label">বিজ্ঞাপন · Advertisement</div><div class="ad-sidebar">${inner}</div></div>`;
 }
 
 // ── RENDER HOME ──
@@ -858,9 +901,11 @@ function renderCat(cat) {
   const s = S[lang];
   const arts = articles.filter(a=>a.category===cat);
   let h = `<button class="back" onclick="nav('')">${s.back}</button>`;
+  h += adBanner('cat-top');
   h += secHead(cat);
   if(arts.length) h += `<div class="cards">${arts.map(makeCard).join('')}</div>`;
   else h += `<div class="empty"><div class="ei">${catEmoji(cat)}</div><h3>${s.noNews}</h3><p>${s.noNewsMsg}</p></div>`;
+  h += adBanner('cat-bottom');
   set(h); scrollTo(0,0);
 }
 
@@ -921,7 +966,7 @@ async function renderArticle(slug) {
           ${summary?`<div class="art-lead">${summary}</div>`:''}
         </div>
       </div>
-      ${a.imageUrl?`<div class="art-card art-img-card"><img class="art-hero" src="${a.imageUrl}" alt="${title||a.titleBn}" onerror="this.closest('.art-img-card').remove()"><div class="art-caption">ছবি: দৈনিক অনুলিপি</div></div>`:''}
+      ${a.imageUrl?`<div class="art-card art-img-card"><div class="art-hero-wrap"><img class="art-hero" src="${a.imageUrl}" alt="${title||a.titleBn}" onerror="this.closest('.art-img-card').remove()"></div><div class="art-caption">ছবি: দৈনিক অনুলিপি</div></div>`:''}
       <div class="art-body">
         ${tlNote}
         ${paras}
