@@ -58,6 +58,10 @@ button{font-family:inherit;cursor:pointer;}
 .theme-btn{background:var(--tog-bg);border:none;width:32px;height:32px;border-radius:50%;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--tog-c);transition:all .3s;}
 .theme-btn:hover{transform:rotate(20deg);}
 .mast-epaper-badge{background:var(--red);color:#fff;font-size:11px;font-weight:700;font-family:'Noto Sans Bengali',sans-serif;padding:4px 12px;letter-spacing:.5px;}
+.lang-grp{display:flex;gap:3px;}
+.lb{background:var(--tog-bg);border:none;color:var(--tog-c);font-size:11.5px;font-weight:700;padding:4px 9px;font-family:'Noto Sans Bengali',sans-serif;transition:all .2s;}
+.lb.on{background:var(--red);color:#fff;}
+.lb:hover:not(.on){background:var(--sur3);}
 
 /* NAV */
 .nav{background:var(--nav-bg);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:300;box-shadow:0 2px 12px var(--shd);transition:background .3s,border-color .3s;}
@@ -292,9 +296,9 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
   <div class="wrap">
     <span id="tbar-date"></span>
     <div class="topbar-r">
-      <a href="index.html">হোম</a>
-      <a onclick="openContactPopup('যোগাযোগ')">যোগাযোগ</a>
-      <a onclick="openContactPopup('বিজ্ঞাপন')">বিজ্ঞাপন</a>
+      <a href="index.html" id="tb-home">হোম</a>
+      <a onclick="openContactPopup('যোগাযোগ')" id="tb-contact">যোগাযোগ</a>
+      <a onclick="openContactPopup('বিজ্ঞাপন')" id="tb-ads">বিজ্ঞাপন</a>
     </div>
   </div>
 </div>
@@ -308,7 +312,11 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
       <div class="logo-tag">সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে!</div>
     </div>
     <div class="mast-r">
-      <div class="mast-epaper-badge">📰 ই-পেপার</div>
+      <div class="mast-epaper-badge" id="mast-badge">📰 ই-পেপার</div>
+      <div class="lang-grp">
+        <button class="lb on" id="lb-bn" onclick="setLang('bn')">বাং</button>
+        <button class="lb"    id="lb-en" onclick="setLang('en')">EN</button>
+      </div>
       <button class="theme-btn" onclick="toggleTheme()" id="theme-btn" title="থিম পরিবর্তন">🌙</button>
     </div>
   </div>
@@ -317,8 +325,8 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
 <!-- NAV -->
 <nav class="nav">
   <div class="wrap">
-    <button class="nl" onclick="location.href='index.html'">🏠 হোম</button>
-    <button class="nl on">📰 ই-পেপার</button>
+    <button class="nl" id="nav-home" onclick="location.href='index.html'">🏠 হোম</button>
+    <button class="nl on" id="nav-epaper">📰 ই-পেপার</button>
   </div>
 </nav>
 
@@ -330,9 +338,9 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
       <!-- LEFT: Viewer -->
       <div class="ep-left">
         <div class="ed-bar">
-          <label>📅 সংখ্যা:</label>
+          <label id="ed-label">📅 সংখ্যা:</label>
           <input type="date" class="ed-date-input" id="ed-date-input">
-          <button class="ed-go-btn" onclick="loadEdition()">দেখুন</button>
+          <button class="ed-go-btn" id="ed-go-btn" onclick="loadEdition()">দেখুন</button>
           <span class="ed-info" id="ed-info"></span>
         </div>
 
@@ -340,7 +348,7 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
           <div class="ep-toolbar">
             <span class="ep-toolbar-title" id="ep-toolbar-title">লোড হচ্ছে…</span>
             <div class="tb-controls">
-              <a id="pdf-download-btn" href="#" download class="tb-dl-btn" style="display:none;">⬇ ডাউনলোড</a>
+              <a id="pdf-download-btn" href="#" download class="tb-dl-btn" style="display:none;" data-bn="⬇ ডাউনলোড" data-en="⬇ Download">⬇ ডাউনলোড</a>
             </div>
           </div>
 
@@ -362,12 +370,12 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
       <!-- RIGHT: Sidebar -->
       <div class="ep-right">
         <div class="tips-box">
-          <div class="sh" style="margin-bottom:10px;"><h3>ব্যবহার নির্দেশিকা</h3><div class="sh-line"></div></div>
-          <div class="tip-row"><span>📅</span><span>তারিখ বেছে সংখ্যা দেখুন</span></div>
-          <div class="tip-row"><span>❮❯</span><span>বাটন বা কীবোর্ডে পাতা বদলান</span></div>
-          <div class="tip-row"><span>⛶</span><span>ফুলস্ক্রিনে পড়ুন</span></div>
-          <div class="tip-row"><span>⬇</span><span>PDF ডাউনলোড করুন</span></div>
-          <div class="tip-row"><span>📖</span><span>নিচে থাম্বনেইল থেকে যান</span></div>
+          <div class="sh" style="margin-bottom:10px;"><h3 id="tips-heading">ব্যবহার নির্দেশিকা</h3><div class="sh-line"></div></div>
+          <div class="tip-row"><span>📅</span><span id="tip-1">তারিখ বেছে সংখ্যা দেখুন</span></div>
+          <div class="tip-row"><span>❮❯</span><span id="tip-2">বাটন বা কীবোর্ডে পাতা বদলান</span></div>
+          <div class="tip-row"><span>⛶</span><span id="tip-3">ফুলস্ক্রিনে পড়ুন</span></div>
+          <div class="tip-row"><span>⬇</span><span id="tip-4">PDF ডাউনলোড করুন</span></div>
+          <div class="tip-row"><span>📖</span><span id="tip-5">নিচে থাম্বনেইল থেকে যান</span></div>
         </div>
       </div>
 
@@ -381,36 +389,36 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
     <div class="fg">
       <div>
         <img src="assets/logo-dark.png" alt="দৈনিক অনুলিপি" class="footer-logo-img">
-        <div class="fl-tag">সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে!</div>
-        <div class="fl-info">প্রতিষ্ঠাতা ও প্রধান প্রকাশক: অনিক অধিকারী<br>প্রতিষ্ঠাতা ও প্রধান সম্পাদক: মো: ফারহান শাহরিয়ার<br>© ২০২৬ দৈনিক অনুলিপি কর্তৃক সংরক্ষিত।<br><br><strong>জরুরি ঘোষণা:</strong><br>এই নিউজ পোর্টালটি বর্তমানে 'পরীক্ষামূলক সম্প্রচার' কার্যক্রম পরিচালনা করছে।
+        <div class="fl-tag" id="footer-tagline">সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে!</div>
+        <div class="fl-info" id="footer-info">প্রতিষ্ঠাতা ও প্রধান প্রকাশক: অনিক অধিকারী<br>প্রতিষ্ঠাতা ও প্রধান সম্পাদক: মো: ফারহান শাহরিয়ার<br>© ২০২৬ দৈনিক অনুলিপি কর্তৃক সংরক্ষিত।<br><br><strong>জরুরি ঘোষণা:</strong><br>এই নিউজ পোর্টালটি বর্তমানে 'পরীক্ষামূলক সম্প্রচার' কার্যক্রম পরিচালনা করছে।
 আমরা সচেতনভাবে রাজনৈতিক সংবাদ এড়িয়ে চলি এবং শুধুমাত্র বিনোদন, তথ্য ও জনস্বার্থমূলক সংবাদ প্রকাশ করি।</div>
       </div>
       <div class="fc">
-        <h5>বিভাগ</h5>
-        <a href="index.html#cat/জাতীয়">জাতীয়</a>
-        <a href="index.html#cat/সারাদেশ">সারাদেশ</a>
-        <a href="index.html#cat/বিশ্ব সংবাদ">বিশ্ব সংবাদ</a>
-        <a href="index.html#cat/বাণিজ্য">বাণিজ্য</a>
-        <a href="index.html#cat/অর্থনীতি">অর্থনীতি</a>
+        <h5 id="footer-cat-heading">বিভাগ</h5>
+        <a href="index.html#cat/জাতীয়" id="ft-cat-1">জাতীয়</a>
+        <a href="index.html#cat/সারাদেশ" id="ft-cat-2">সারাদেশ</a>
+        <a href="index.html#cat/বিশ্ব সংবাদ" id="ft-cat-3">বিশ্ব সংবাদ</a>
+        <a href="index.html#cat/বাণিজ্য" id="ft-cat-4">বাণিজ্য</a>
+        <a href="index.html#cat/অর্থনীতি" id="ft-cat-5">অর্থনীতি</a>
       </div>
       <div class="fc">
-        <h5>আরও</h5>
-        <a href="index.html#cat/খেলা">খেলা</a>
-        <a href="index.html#cat/আনন্দ সময়">আনন্দ সময়</a>
-        <a href="index.html#cat/চাকরি">চাকরি</a>
-        <a href="index.html#cat/মতামত">মতামত</a>
-        <a href="index.html#cat/বিশেষ সংবাদ">বিশেষ সংবাদ</a>
+        <h5 id="footer-more-heading">আরও</h5>
+        <a href="index.html#cat/খেলা" id="ft-cat-6">খেলা</a>
+        <a href="index.html#cat/আনন্দ সময়" id="ft-cat-7">আনন্দ সময়</a>
+        <a href="index.html#cat/চাকরি" id="ft-cat-8">চাকরি</a>
+        <a href="index.html#cat/মতামত" id="ft-cat-9">মতামত</a>
+        <a href="index.html#cat/বিশেষ সংবাদ" id="ft-cat-10">বিশেষ সংবাদ</a>
       </div>
       <div class="fc">
-        <h5>তথ্য</h5>
-        <a onclick="openInfoPopup('about')">আমাদের সম্পর্কে</a>
-        <a onclick="openContactPopup('যোগাযোগ')">যোগাযোগ করুন</a>
-        <a onclick="openContactPopup('বিজ্ঞাপন')">বিজ্ঞাপন দিন</a>
-        <a href="submit.html" target="_blank">রিপোর্টার পোর্টাল</a>
-        <a onclick="openInfoPopup('privacy')">গোপনীয়তা নীতি</a>
+        <h5 id="footer-info-heading">তথ্য</h5>
+        <a onclick="openInfoPopup('about')" id="ft-about">আমাদের সম্পর্কে</a>
+        <a onclick="openContactPopup('যোগাযোগ')" id="ft-contact">যোগাযোগ করুন</a>
+        <a onclick="openContactPopup('বিজ্ঞাপন')" id="ft-advertise">বিজ্ঞাপন দিন</a>
+        <a href="submit.html" target="_blank" id="ft-reporter">রিপোর্টার পোর্টাল</a>
+        <a onclick="openInfoPopup('privacy')" id="ft-privacy">গোপনীয়তা নীতি</a>
       </div>
     </div>
-    <div class="fb-bot">দৈনিক অনুলিপি | Dainik Anulipi | The Daily Anulipi — সর্বস্বত্ব সংরক্ষিত ২০২৬</div>
+    <div class="fb-bot" id="footer-bottom">দৈনিক অনুলিপি | Dainik Anulipi | The Daily Anulipi — সর্বস্বত্ব সংরক্ষিত ২০২৬</div>
   </div>
 </footer>
 
@@ -423,7 +431,7 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
       <span class="fs-pg" id="fs-pg">—</span>
       <button class="fs-btn" id="fs-next" onclick="goPage(1)" disabled>❯</button>
     </div>
-    <button class="fs-close" onclick="closeFullscreen()">✕ বন্ধ</button>
+    <button class="fs-close" id="fs-close-btn" onclick="closeFullscreen()">✕ বন্ধ</button>
   </div>
   <div class="fs-body" id="fs-body">
     <button class="fs-nav left" id="fs-nav-left" onclick="goPage(-1)" disabled>❮</button>
@@ -492,6 +500,10 @@ footer{background:var(--foot);color:#555;padding:28px 0 0;transition:background 
 <script>
 // ── PDF.js worker ──
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// ── LANG (declared early to avoid TDZ) ──
+var lang = localStorage.getItem('anulipi_lang') || 'bn';
+if(lang==='ar') lang='bn';
 
 // ── CONFIG ──
 const PDF_BASE_PATH = 'https://dainikanulipi.github.io/da.com/assets/epapers/';
@@ -725,9 +737,15 @@ function applyTheme(){
 // ── TOPBAR DATE ──
 function setTopbarDate(){
   const d=new Date();
-  const months=['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
-  const days=['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
-  document.getElementById('tbar-date').textContent=`${days[d.getDay()]}, ${toBnDigits(String(d.getDate()))} ${months[d.getMonth()]} ${toBnDigits(String(d.getFullYear()))}`;
+  if(lang==='en'){
+    const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    document.getElementById('tbar-date').textContent=`${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  } else {
+    const months=['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+    const days=['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
+    document.getElementById('tbar-date').textContent=`${days[d.getDay()]}, ${toBnDigits(String(d.getDate()))} ${months[d.getMonth()]} ${toBnDigits(String(d.getFullYear()))}`;
+  }
 }
 
 // ── KEYBOARD ──
@@ -747,7 +765,10 @@ document.getElementById('book-area').addEventListener('touchend',e=>{
 
 // ── CONTACT POPUP ──
 function openContactPopup(type){
-  document.getElementById('popup-title').textContent=type==='বিজ্ঞাপন'?'📢 বিজ্ঞাপন দিন':'📬 যোগাযোগ করুন';
+  const isAd = type==='বিজ্ঞাপন';
+  document.getElementById('popup-title').textContent = lang==='en'
+    ? (isAd ? T.en.adsTitle : T.en.contactTitle)
+    : (isAd ? T.bn.adsTitle : T.bn.contactTitle);
   document.getElementById('contact-popup-overlay').style.display='flex';
   document.body.style.overflow='hidden';
 }
@@ -820,7 +841,7 @@ const INFO_CONTENT={
   }
 };
 function openInfoPopup(type){
-  const c=INFO_CONTENT[type]; if(!c)return;
+  const c=(lang==='en' ? INFO_CONTENT_EN : INFO_CONTENT)[type]; if(!c)return;
   document.getElementById('info-popup-title').textContent=c.title;
   document.getElementById('info-popup-body').innerHTML=c.body;
   document.getElementById('info-popup-overlay').style.display='flex';
@@ -832,9 +853,171 @@ function closeInfoPopup(e){
   document.body.style.overflow='';
 }
 
+// ── LANGUAGE SYSTEM ──
+var CAT_EN = {'জাতীয়':'National','সারাদেশ':'Across the Country','বিশ্ব সংবাদ':'World','বাণিজ্য':'Business','অর্থনীতি':'Economy','খেলা':'Sports','আনন্দ সময়':'Entertainment','চাকরি':'Jobs','মতামত':'Opinion','বিশেষ সংবাদ':'Special News'};
+
+var T = {
+  bn:{
+    home:'হোম', contact:'যোগাযোগ', ads:'বিজ্ঞাপন',
+    badge:'📰 ই-পেপার', navHome:'🏠 হোম', navEpaper:'📰 ই-পেপার',
+    edLabel:'📅 সংখ্যা:', edBtn:'দেখুন', download:'⬇ ডাউনলোড',
+    loading:'লোড হচ্ছে…', noEdition:'এই তারিখের সংখ্যা পাওয়া যায়নি।',
+    tipsHeading:'ব্যবহার নির্দেশিকা',
+    tip1:'তারিখ বেছে সংখ্যা দেখুন', tip2:'বাটন বা কীবোর্ডে পাতা বদলান',
+    tip3:'ফুলস্ক্রিনে পড়ুন', tip4:'PDF ডাউনলোড করুন', tip5:'নিচে থাম্বনেইল থেকে যান',
+    tagline:'সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে!',
+    footerInfo:'প্রতিষ্ঠাতা ও প্রধান প্রকাশক: অনিক অধিকারী<br>প্রতিষ্ঠাতা ও প্রধান সম্পাদক: মো: ফারহান শাহরিয়ার<br>© ২০২৬ দৈনিক অনুলিপি কর্তৃক সংরক্ষিত।<br><br><strong>জরুরি ঘোষণা:</strong><br>এই নিউজ পোর্টালটি বর্তমানে \'পরীক্ষামূলক সম্প্রচার\' কার্যক্রম পরিচালনা করছে। আমরা সচেতনভাবে রাজনৈতিক সংবাদ এড়িয়ে চলি এবং শুধুমাত্র বিনোদন, তথ্য ও জনস্বার্থমূলক সংবাদ প্রকাশ করি।',
+    fCat:'বিভাগ', fMore:'আরও', fInfo:'তথ্য',
+    ftAbout:'আমাদের সম্পর্কে', ftContact:'যোগাযোগ করুন', ftAds:'বিজ্ঞাপন দিন',
+    ftReporter:'রিপোর্টার পোর্টাল', ftPrivacy:'গোপনীয়তা নীতি',
+    footerBottom:'দৈনিক অনুলিপি | Dainik Anulipi | The Daily Anulipi — সর্বস্বত্ব সংরক্ষিত ২০২৬',
+    fsClose:'✕ বন্ধ', visitWebsite:'🌐 ওয়েবসাইট ভিজিট করুন',
+    contactTitle:'📬 যোগাযোগ করুন', adsTitle:'📢 বিজ্ঞাপন দিন',
+    cats:['জাতীয়','সারাদেশ','বিশ্ব সংবাদ','বাণিজ্য','অর্থনীতি','খেলা','আনন্দ সময়','চাকরি','মতামত','বিশেষ সংবাদ'],
+  },
+  en:{
+    home:'Home', contact:'Contact', ads:'Advertise',
+    badge:'📰 E-Paper', navHome:'🏠 Home', navEpaper:'📰 E-Paper',
+    edLabel:'📅 Edition:', edBtn:'View', download:'⬇ Download',
+    loading:'Loading…', noEdition:'No edition found for this date.',
+    tipsHeading:'How to Use',
+    tip1:'Select a date to view an edition', tip2:'Use buttons or keyboard to flip pages',
+    tip3:'Read in fullscreen', tip4:'Download the PDF', tip5:'Jump to a page from thumbnails below',
+    tagline:'In pursuit of truth, with dedication!',
+    footerInfo:'Founder & Chief Publisher: Anik Adhikari<br>Founder & Editor-in-Chief: Md. Farhan Shahriar<br>© 2026 Dainik Anulipi. All rights reserved.<br><br><strong>Important Notice:</strong><br>This news portal is currently running on a \'trial broadcast\' basis. We consciously avoid political news and publish only entertainment, informational, and public-interest content.',
+    fCat:'Categories', fMore:'More', fInfo:'Information',
+    ftAbout:'About Us', ftContact:'Contact Us', ftAds:'Advertise With Us',
+    ftReporter:'Reporter Portal', ftPrivacy:'Privacy Policy',
+    footerBottom:'দৈনিক অনুলিপি | Dainik Anulipi | The Daily Anulipi — All rights reserved 2026',
+    fsClose:'✕ Close', visitWebsite:'🌐 Visit Website',
+    contactTitle:'📬 Contact Us', adsTitle:'📢 Advertise With Us',
+    cats:['National','Across the Country','World','Business','Economy','Sports','Entertainment','Jobs','Opinion','Special News'],
+  }
+};
+
+
+function setLang(l) {
+  lang = l;
+  document.documentElement.setAttribute('lang', l);
+  document.querySelectorAll('.lb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('lb-'+l).classList.add('on');
+  localStorage.setItem('anulipi_lang', l);
+  applyLangUI();
+}
+
+var INFO_CONTENT_EN = {
+  about:{
+    title:'🗞️ About Us',
+    body:`
+      <div style="margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--bdr);text-align:center;">
+        <img src="assets/logo.png" alt="Dainik Anulipi" class="about-logo about-logo-light">
+        <img src="assets/logo-dark.png" alt="Dainik Anulipi" class="about-logo about-logo-dark">
+        <div style="font-size:12px;color:var(--txt2);font-style:italic;margin-top:8px;">In pursuit of truth, with dedication!</div>
+      </div>
+      <div style="background:var(--sur2);border-left:4px solid var(--red);padding:14px 16px;margin-bottom:18px;">
+        <div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px;font-family:'Noto Sans Bengali',sans-serif;">⚠️ Important Notice</div>
+        <p style="font-size:13.5px;line-height:1.85;color:var(--txt2);margin:0;">This news portal is currently running a "trial broadcast". We consciously avoid political news and publish only entertainment, informational, and public-interest news.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
+        <div style="background:var(--sur2);padding:12px 14px;border:1px solid var(--bdr);">
+          <div style="font-size:10px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;margin-bottom:4px;">Founder & Chief Publisher</div>
+          <div style="font-size:13.5px;font-weight:700;">Anik Adhikari</div>
+        </div>
+        <div style="background:var(--sur2);padding:12px 14px;border:1px solid var(--bdr);">
+          <div style="font-size:10px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;margin-bottom:4px;">Founder & Editor-in-Chief</div>
+          <div style="font-size:13.5px;font-weight:700;">Md. Farhan Shahriar</div>
+        </div>
+      </div>
+      <div style="padding:14px 0 18px;border-bottom:1px solid var(--bdr);margin-bottom:14px;">
+        <p style="font-size:13.5px;line-height:1.9;color:var(--txt2);margin:0;">Dainik Anulipi is an online news portal launched with the goal of delivering truthful and impartial news.</p>
+      </div>
+      <div style="text-align:center;padding-top:4px;">
+        <div style="font-size:11px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;">© 2026 Dainik Anulipi. All rights reserved.</div>
+      </div>`
+  },
+  privacy:{
+    title:'🔒 Privacy Policy',
+    body:`
+      <p style="font-size:12px;color:var(--txt3);font-family:'Noto Sans Bengali',sans-serif;margin-bottom:16px;">Last updated: January 2026</p>
+      <div style="display:flex;flex-direction:column;gap:0;">
+        <div style="padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--bdr);">
+          <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:6px;">📋 Information Collection</div>
+          <p style="font-size:14px;line-height:1.85;color:var(--txt2);margin:0;">We only collect information necessary to improve the portal's services. Readers' personal information is never sold or transferred to any third party.</p>
+        </div>
+        <div style="padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--bdr);">
+          <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:6px;">🍪 Use of Cookies</div>
+          <p style="font-size:14px;line-height:1.85;color:var(--txt2);margin:0;">This portal uses cookies to improve user experience. Local storage is used to save theme and language preferences.</p>
+        </div>
+        <div style="padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--bdr);">
+          <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:6px;">📰 Content Responsibility</div>
+          <p style="font-size:14px;line-height:1.85;color:var(--txt2);margin:0;">Responsibility for published content lies with the respective authors. The portal management strives to verify accuracy.</p>
+        </div>
+        <div style="padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid var(--bdr);">
+          <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:6px;">📢 Advertising Policy</div>
+          <p style="font-size:14px;line-height:1.85;color:var(--txt2);margin:0;">We maintain transparent and ethical relationships with advertisers. Advertising content does not influence editorial policy.</p>
+        </div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:6px;">✉️ Contact</div>
+          <p style="font-size:14px;line-height:1.85;color:var(--txt2);margin:0;">For any privacy-related questions: <a href="mailto:dainikanulipi@gmail.com" style="color:var(--red);font-weight:700;">dainikanulipi@gmail.com</a></p>
+        </div>
+      </div>
+      <div style="text-align:center;padding-top:16px;margin-top:16px;border-top:1px solid var(--bdr);">
+        <div style="font-size:11px;color:var(--txt3);">© 2026 Dainik Anulipi — All Rights Reserved</div>
+      </div>`
+  }
+};
+
+function applyLangUI() {
+  const t = T[lang];
+  const catKeys = ['জাতীয়','সারাদেশ','বিশ্ব সংবাদ','বাণিজ্য','অর্থনীতি','খেলা','আনন্দ সময়','চাকরি','মতামত','বিশেষ সংবাদ'];
+
+  document.getElementById('tb-home').textContent      = t.home;
+  document.getElementById('tb-contact').textContent   = t.contact;
+  document.getElementById('tb-ads').textContent       = t.ads;
+  document.getElementById('mast-badge').textContent   = t.badge;
+  document.getElementById('nav-home').textContent     = t.navHome;
+  document.getElementById('nav-epaper').textContent   = t.navEpaper;
+  document.getElementById('ed-label').textContent     = t.edLabel;
+  document.getElementById('ed-go-btn').textContent    = t.edBtn;
+  const dlBtn = document.getElementById('pdf-download-btn');
+  if(dlBtn) dlBtn.textContent = t.download;
+  const toolTitle = document.getElementById('ep-toolbar-title');
+  if(toolTitle && toolTitle.textContent.includes('লোড') || toolTitle && toolTitle.textContent.includes('Load'))
+    toolTitle.textContent = t.loading;
+  document.getElementById('tips-heading').textContent = t.tipsHeading;
+  document.getElementById('tip-1').textContent = t.tip1;
+  document.getElementById('tip-2').textContent = t.tip2;
+  document.getElementById('tip-3').textContent = t.tip3;
+  document.getElementById('tip-4').textContent = t.tip4;
+  document.getElementById('tip-5').textContent = t.tip5;
+  document.getElementById('footer-tagline').textContent    = t.tagline;
+  document.getElementById('footer-info').innerHTML         = t.footerInfo;
+  document.getElementById('footer-cat-heading').textContent= t.fCat;
+  document.getElementById('footer-more-heading').textContent= t.fMore;
+  document.getElementById('footer-info-heading').textContent= t.fInfo;
+  document.getElementById('ft-about').textContent    = t.ftAbout;
+  document.getElementById('ft-contact').textContent  = t.ftContact;
+  document.getElementById('ft-advertise').textContent= t.ftAds;
+  document.getElementById('ft-reporter').textContent = t.ftReporter;
+  document.getElementById('ft-privacy').textContent  = t.ftPrivacy;
+  document.getElementById('footer-bottom').textContent     = t.footerBottom;
+  document.getElementById('fs-close-btn') && (document.getElementById('fs-close-btn').textContent = t.fsClose);
+  const visitLink = document.querySelector('#contact-popup-overlay a[href*="dainikanulipi.github"]');
+  if(visitLink) visitLink.textContent = t.visitWebsite;
+
+  // footer category links
+  catKeys.forEach((cat,i) => {
+    const el = document.getElementById('ft-cat-'+(i+1));
+    if(el) el.textContent = lang==='en' ? (CAT_EN[cat]||cat) : cat;
+  });
+
+  // date display in topbar
+  setTopbarDate();
+}
+
 // ── INIT ──
 function init(){
-  applyTheme(); setTopbarDate();
+  applyTheme(); setLang(lang);
   const today=new Date();
   document.getElementById('ed-date-input').value=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
   buildArchive();
