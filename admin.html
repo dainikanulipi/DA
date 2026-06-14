@@ -663,6 +663,8 @@ function launchApp() {
   applyTheme(theme);
   showPage('dashboard');
   loadArticles();
+  // Auto-refresh every 60 seconds
+  setInterval(() => { loadArticles(); }, 60000);
 }
 
 // Auto-restore session
