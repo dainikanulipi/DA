@@ -155,6 +155,16 @@ a{text-decoration:none;color:inherit;}
 #prev-box .pb{font-size:14px;line-height:1.9;white-space:pre-line;}
 .slug-disp{background:var(--sur2);border:1px dashed var(--bdr);padding:7px 11px;font-size:11px;color:var(--txt3);margin-top:5px;font-family:monospace;word-break:break-all;transition:background .3s;}
 
+/* AI AUTO-FILL */
+.ai-fill-bar{background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #0f3460;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.ai-fill-bar .ai-info{flex:1;min-width:0;}
+.ai-fill-bar .ai-title{font-size:13.5px;font-weight:700;color:#e0e0ff;display:flex;align-items:center;gap:6px;}
+.ai-fill-bar .ai-sub{font-size:11.5px;color:#8888bb;margin-top:2px;}
+.ai-btn{background:linear-gradient(135deg,#6c63ff,#a855f7);color:#fff;border:none;padding:9px 18px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0;}
+.ai-btn:hover:not(:disabled){background:linear-gradient(135deg,#5a52e0,#9333ea);transform:translateY(-1px);}
+.ai-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.ai-done{background:#0d2a1c;border:1px solid #1a7a4a;padding:10px 14px;font-size:13px;color:#2ecc71;margin-bottom:12px;display:none;}
+
 /* SUBMIT */
 .sub-btn{background:var(--red);color:#fff;border:none;padding:12px 30px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:background .2s;display:inline-flex;align-items:center;gap:7px;}
 .sub-btn:hover:not(:disabled){background:var(--dkred);}
@@ -314,7 +324,7 @@ a{text-decoration:none;color:inherit;}
     <div class="welcome-bar">
       <div class="wb-content">
         <strong>👋 স্বাগতম, <span id="rep-display"></span></strong><br>
-        <span style="font-size:12px;color:var(--txt2)">বাংলা ও ইংরেজি উভয় ভাষায় সংবাদ জমা দিন — আরবি স্বয়ংক্রিয়ভাবে অনুবাদ হবে।</span>
+        <span style="font-size:12px;color:var(--txt2)">বাংলায় লিখুন, স্বয়ংক্রিয়ভাবে ইংরেজিতে অনুবাদ হবে।</span>
       </div>
       <button class="lo-btn" onclick="logout()">লগআউট</button>
     </div>
@@ -392,6 +402,16 @@ a{text-decoration:none;color:inherit;}
         <div class="hint">ছবি আপলোড অথবা URL — যেকোনো একটি দিন।</div>
       </div>
 
+      <!-- AI AUTO-FILL BAR -->
+      <div class="ai-fill-bar">
+        <div class="ai-info">
+          <div class="ai-title">🤖 স্বয়ংক্রিয় অনুবাদ</div>
+          <div class="ai-sub">বাংলা শিরোনাম ও বিস্তারিত লিখুন → বাকি সব স্বয়ংক্রিয়ভাবে পূরণ হবে</div>
+        </div>
+        <button class="ai-btn" id="ai-btn" onclick="autoFill()">✨ স্বয়ংক্রিয় পূরণ</button>
+      </div>
+      <div class="ai-done" id="ai-done">✅ অনুবাদ সম্পন্ন! পর্যালোচনা করে জমা দিন।</div>
+
       <!-- LANGUAGE TABS -->
       <div style="margin-top:4px">
         <div class="lang-tabs">
@@ -410,7 +430,7 @@ a{text-decoration:none;color:inherit;}
           </div>
 
           <div class="fr">
-            <label>সংক্ষিপ্ত বিবরণ (বাংলা) <span>*</span></label>
+            <label>সংক্ষিপ্ত বিবরণ (বাংলা)</label>
             <input type="text" id="f-summary-bn" placeholder="১-২ বাক্যে সারাংশ (বাংলা)…" maxlength="300" oninput="cc('f-summary-bn','cc-sbn',300)">
             <div class="cc" id="cc-sbn">০/৩০০</div>
           </div>
@@ -432,18 +452,18 @@ a{text-decoration:none;color:inherit;}
           <div class="lang-badge en-badge">English Content</div>
 
           <div class="fr">
-            <label>Headline (English) <span>*</span></label>
+            <label>Headline (English)</label>
             <input type="text" id="f-title-en" placeholder="Write headline in English…" maxlength="220" style="font-family:sans-serif">
           </div>
 
           <div class="fr">
-            <label>Summary (English) <span>*</span></label>
+            <label>Summary (English)</label>
             <input type="text" id="f-summary-en" placeholder="1-2 sentence summary in English…" maxlength="300" oninput="cc('f-summary-en','cc-sen',300)" style="font-family:sans-serif">
             <div class="cc" id="cc-sen">0/300</div>
           </div>
 
           <div class="fr">
-            <label>Full Article (English) <span>*</span></label>
+            <label>Full Article (English)</label>
             <div class="prev-toggle" onclick="togglePrev('en')">👁 English Preview</div>
             <div id="prev-box-en" style="display:none;border:1px solid var(--bdr);padding:14px;background:var(--sur2);margin-bottom:10px;font-family:sans-serif;">
               <h4 id="pv-t-en" style="margin-bottom:5px;font-size:18px">(Headline)</h4>
@@ -455,10 +475,7 @@ a{text-decoration:none;color:inherit;}
           </div>
         </div>
 
-        <!-- ARABIC NOTE -->
-        <div class="ar-note">
-          <strong>🤖 আরবি সংবাদ:</strong> ওয়েবসাইট স্বয়ংক্রিয়ভাবে বাংলা থেকে আরবিতে অনুবাদ করবে। আপনাকে আরবি লিখতে হবে না।
-        </div>
+
       </div>
 
       <button class="sub-btn" id="sub-btn" onclick="submitArt()">
@@ -480,7 +497,7 @@ a{text-decoration:none;color:inherit;}
 <script>
 // ══════════════════════════════
 const CFG = {
-  SUBMIT_URL: 'https://script.google.com/macros/s/AKfycbwU0xxMSYdpxlkOWoRi2D2pgNWe9HumBSdMC8KwJ0r965bHbW_MfRPL_u7WcTd_tHB4/exec',
+  SUBMIT_URL: 'https://script.google.com/macros/s/AKfycbzm-bOtRWcL1rK3Ie1svpB75ShIpOrIjc07FCns1XZjfSbXJzffeQRpnuT55gq8m1ol/exec',
   PASSWORD:   '@DA_Submit_26@',      // ← change this!
   IMGBB_KEY:  '1047ea7cf0739f560f24adc8b645cfe1', // ← free at imgbb.com/api
 };
@@ -730,11 +747,7 @@ async function submitArt(){
   // Validation
   const errs=[];
   if(!titleBn)   errs.push('বাংলা শিরোনাম');
-  if(!titleEn)   errs.push('English Headline');
-  if(!summaryBn) errs.push('বাংলা সারাংশ');
-  if(!summaryEn) errs.push('English Summary');
   if(!contentBn||contentBn.length<40) errs.push('বাংলা বিস্তারিত (কমপক্ষে ৪০ অক্ষর)');
-  if(!contentEn||contentEn.length<40) errs.push('English content (min 40 chars)');
   if(!cat)       errs.push('বিভাগ');
   if(!author)    errs.push('রিপোর্টারের নাম');
   if(!date)      errs.push('তারিখ');
@@ -767,6 +780,77 @@ async function submitArt(){
     } else showStatus('err','❌ '+(json.error||'অজানা ত্রুটি'));
   }catch(e){showStatus('err','❌ নেটওয়ার্ক সমস্যা: '+e.message);}
   finally{btn.disabled=false;}
+}
+
+// ── AUTO-FILL via Apps Script LanguageApp ──
+function bnSummary(text){
+  const sentences=text.split(/[।!?]+/).map(s=>s.trim()).filter(s=>s.length>5);
+  return sentences.slice(0,2).join('। ')+(sentences.length>0?'।':'');
+}
+
+async function translateViaBackend(text){
+  const url=CFG.SUBMIT_URL+'?action=translate&sl=bn&tl=en&text='+encodeURIComponent(text);
+  const res=await fetch(url);
+  const json=await res.json();
+  if(json.success) return json.translation;
+  throw new Error(json.error||'Translation failed');
+}
+
+async function autoFill(){
+  const titleBn  =document.getElementById('f-title-bn').value.trim();
+  const contentBn=document.getElementById('f-content-bn').value.trim();
+  if(!titleBn){showStatus('err','❌ আগে বাংলা শিরোনাম লিখুন।');return;}
+  if(!contentBn||contentBn.length<40){showStatus('err','❌ আগে বাংলায় সংবাদের বিস্তারিত লিখুন।');return;}
+
+  const btn=document.getElementById('ai-btn');
+  btn.disabled=true;btn.textContent='⏳ অনুবাদ হচ্ছে…';
+  document.getElementById('ai-done').style.display='none';
+  showStatus('loading','🔄 অনুবাদ হচ্ছে, একটু অপেক্ষা করুন…');
+
+  try{
+    // Bengali summary — first 2 sentences
+    const summaryBn=bnSummary(contentBn);
+    document.getElementById('f-summary-bn').value=summaryBn;
+    cc('f-summary-bn','cc-sbn',300);
+
+    // Translate title
+    showStatus('loading','🔄 শিরোনাম অনুবাদ হচ্ছে…');
+    const titleEn=await translateViaBackend(titleBn);
+    document.getElementById('f-title-en').value=titleEn;
+
+    // Translate summary
+    showStatus('loading','🔄 সারাংশ অনুবাদ হচ্ছে…');
+    const summaryEn=await translateViaBackend(summaryBn);
+    document.getElementById('f-summary-en').value=summaryEn;
+    cc('f-summary-en','cc-sen',300);
+
+    // Translate full article in paragraph chunks
+    showStatus('loading','🔄 পুরো সংবাদ অনুবাদ হচ্ছে…');
+    const paras=contentBn.split(/\n+/).filter(p=>p.trim());
+    const chunks=[];let cur='';
+    for(const p of paras){
+      if((cur+p).length>800){if(cur)chunks.push(cur.trim());cur=p;}
+      else cur+=(cur?'\n':'')+p;
+    }
+    if(cur)chunks.push(cur.trim());
+
+    const translated=[];
+    for(const chunk of chunks){
+      const t=await translateViaBackend(chunk);
+      translated.push(t);
+    }
+    const contentEn=translated.join('\n\n');
+    document.getElementById('f-content-en').value=contentEn;
+    cc('f-content-en','cc-cen',0);
+
+    document.getElementById('ai-done').style.display='block';
+    showStatus('ok','✅ অনুবাদ সম্পন্ন! পর্যালোচনা করুন।');
+
+  }catch(err){
+    showStatus('err','❌ অনুবাদে সমস্যা: '+err.message);
+  }finally{
+    btn.disabled=false;btn.textContent='✨ স্বয়ংক্রিয় পূরণ';
+  }
 }
 
 function resetForm(){
