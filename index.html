@@ -4,20 +4,21 @@
 <meta name="google-site-verification" content="CrmvnItIALEJmUgbVzhpY8_ze_nwZpjrUZggcJi19Bk" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="দৈনিক অনুলিপি — সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে!">
+<meta name="description" content="দৈনিক অনুলিপি — সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে!" id="meta-desc">
 <title>দৈনিক অনুলিপি | সর্বশেষ সংবাদ</title>
 <link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="canonical" href="https://dainikanulipi.github.io/da.com/" id="meta-canonical">
 
 <!-- Open Graph / Social sharing -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://dainikanulipi.github.io/da.com/">
-<meta property="og:title" content="দৈনিক অনুলিপি | সর্বশেষ সংবাদ">
-<meta property="og:description" content="সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে! — দৈনিক অনুলিপি, বাংলাদেশের অনলাইন সংবাদ পোর্টাল।">
-<meta property="og:image" content="https://dainikanulipi.github.io/da.com/assets/preview.jpg">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="দৈনিক অনুলিপি | সর্বশেষ সংবাদ">
-<meta name="twitter:description" content="সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে!">
-<meta name="twitter:image" content="https://dainikanulipi.github.io/da.com/assets/preview.jpg">
+<meta property="og:type" content="website" id="meta-og-type">
+<meta property="og:url" content="https://dainikanulipi.github.io/da.com/" id="meta-og-url">
+<meta property="og:title" content="দৈনিক অনুলিপি | সর্বশেষ সংবাদ" id="meta-og-title">
+<meta property="og:description" content="সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে! — দৈনিক অনুলিপি, বাংলাদেশের অনলাইন সংবাদ পোর্টাল।" id="meta-og-desc">
+<meta property="og:image" content="https://dainikanulipi.github.io/da.com/assets/preview.jpg" id="meta-og-img">
+<meta name="twitter:card" content="summary_large_image" id="meta-tw-card">
+<meta name="twitter:title" content="দৈনিক অনুলিপি | সর্বশেষ সংবাদ" id="meta-tw-title">
+<meta name="twitter:description" content="সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে!" id="meta-tw-desc">
+<meta name="twitter:image" content="https://dainikanulipi.github.io/da.com/assets/preview.jpg" id="meta-tw-img">
 
 <!-- Mobile browser bar color -->
 <meta name="theme-color" content="#C8102E">
@@ -633,6 +634,32 @@ const CFG = {
 };
 // ══════════════════════════════════════════════
 
+const SITE_URL   = 'https://dainikanulipi.github.io/da.com/';
+const SITE_TITLE = 'দৈনিক অনুলিপি';
+const SITE_DESC  = 'সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে! — দৈনিক অনুলিপি, বাংলাদেশের অনলাইন সংবাদ পোর্টাল।';
+const SITE_IMG   = SITE_URL + 'assets/preview.jpg';
+
+function setMeta(title, desc, img, url, type='website') {
+  document.title = title;
+  document.getElementById('meta-desc').setAttribute('content', desc);
+  document.getElementById('meta-canonical').setAttribute('href', url);
+  document.getElementById('meta-og-type').setAttribute('content', type);
+  document.getElementById('meta-og-url').setAttribute('content', url);
+  document.getElementById('meta-og-title').setAttribute('content', title);
+  document.getElementById('meta-og-desc').setAttribute('content', desc);
+  document.getElementById('meta-og-img').setAttribute('content', img);
+  document.getElementById('meta-tw-title').setAttribute('content', title);
+  document.getElementById('meta-tw-desc').setAttribute('content', desc);
+  document.getElementById('meta-tw-img').setAttribute('content', img);
+}
+
+function resetMeta() {
+  setMeta(
+    SITE_TITLE + ' | সর্বশেষ সংবাদ',
+    SITE_DESC, SITE_IMG, SITE_URL
+  );
+}
+
 // ── LANGUAGE STRINGS ──
 const S = {
   bn:{dir:'ltr',lang:'bn',breaking:'শিরোনাম',latest:'সর্বশেষ সংবাদ',noNews:'কোনো সংবাদ নেই',noNewsMsg:'এখন পর্যন্ত কোনো সংবাদ প্রকাশিত হয়নি।',loading:'সংবাদ লোড হচ্ছে…',share:'শেয়ার করুন:',fb:'ফেসবুক',wa:'হোয়াটসঅ্যাপ',copy:'লিংক কপি',copied:'✓ কপি!',back:'← পেছনে',related:'সম্পর্কিত সংবাদ',recent:'সাম্প্রতিক সংবাদ',more:'আরও দেখুন →',notFound:'সংবাদটি পাওয়া যায়নি',notFoundMsg:'আপনি যে সংবাদটি খুঁজছেন তা পাওয়া যাচ্ছে না।',tagline:'সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে!',translating:'অনুবাদ হচ্ছে…',translateErr:'অনুবাদ ব্যর্থ',epaper:'ই-পেপার',by:'',goHome:'হোমে ফিরুন',searchPh:'অনুসন্ধান করুন…',searchBtn:'খুঁজুন',searchResults:'অনুসন্ধানের ফলাফল',searchFor:'এর জন্য ফলাফল',resultsFound:'টি সংবাদ পাওয়া গেছে',noResults:'কোনো সংবাদ পাওয়া যায়নি',noResultsMsg:'অন্য শব্দ দিয়ে চেষ্টা করুন।',
@@ -931,6 +958,7 @@ function adSidebar(id='') {
 // ── RENDER HOME ──
 function renderHome() {
   const s = S[lang];
+  resetMeta();
   if (!articles.length) {
     set(`<div class="empty"><div class="ei">📰</div><h3>${s.noNews}</h3><p>${s.noNewsMsg}</p></div>`);
     return;
@@ -1010,6 +1038,10 @@ function searchArticles(q) {
 
 function renderSearch(query) {
   const s = S[lang];
+  setMeta(
+    `"${query}" — ${s.searchResults} | ${SITE_TITLE}`,
+    SITE_DESC, SITE_IMG, SITE_URL + '#search/' + encodeURIComponent(query)
+  );
   _searchVisible = SEARCH_PAGE_SIZE;
   _lastQuery = query;
   document.getElementById('search-input').value = query;
@@ -1043,6 +1075,12 @@ function loadMoreSearch() {
 
 function renderCat(cat) {
   const s = S[lang];
+  setMeta(
+    `${catName(cat)} | ${SITE_TITLE}`,
+    `${catName(cat)} বিভাগের সর্বশেষ সংবাদ — ${SITE_TITLE}`,
+    SITE_IMG,
+    SITE_URL + '#cat/' + encodeURIComponent(cat)
+  );
   const arts = articles.filter(a=>a.category===cat);
   let h = `<button class="back" onclick="nav('')">${s.back}</button>`;
   h += adBanner('cat-top');
@@ -1092,6 +1130,13 @@ async function renderArticle(slug) {
   }
 
   document.title = `${title||a.titleBn} | দৈনিক অনুলিপি`;
+  setMeta(
+    `${title||a.titleBn} | ${SITE_TITLE}`,
+    (summary||a.summaryBn||'').substring(0, 160) || SITE_DESC,
+    a.imageUrl || SITE_IMG,
+    SITE_URL + '#article/' + slug,
+    'article'
+  );
   const parasArr = content.split('\n').filter(p=>p.trim());
   const midPoint = Math.floor(parasArr.length / 2);
   const firstHalf = parasArr.slice(0, midPoint).map(p=>`<p>${p}</p>`).join('');
