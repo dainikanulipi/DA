@@ -119,8 +119,14 @@ button{font-family:inherit;cursor:pointer;}
 .ti::before{content:'◆ ';font-size:9px;opacity:.6;}
 @keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
+/* ── TAB BAR (epaper-style) ── */
+.tab-bar{background:var(--nav-bg);border-bottom:1px solid var(--bdr);transition:background .3s,border-color .3s;position:sticky;top:0;z-index:301;}
+.tab-bar .wrap{display:flex;align-items:stretch;}
+.tl{padding:11px 14px;font-size:13px;font-weight:700;white-space:nowrap;border-bottom:3px solid transparent;color:var(--txt2);transition:all .2s;cursor:pointer;font-family:'Noto Sans Bengali',sans-serif;border:none;background:none;display:flex;align-items:center;gap:5px;}
+.tl:hover,.tl.on{color:var(--red);border-bottom:3px solid var(--red);}
+
 /* ── NAV ── */
-.nav{background:var(--nav-bg);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:300;box-shadow:0 2px 10px var(--shd);transition:background .3s,border-color .3s;}
+.nav{background:var(--nav-bg);border-bottom:1px solid var(--bdr);position:sticky;top:44px;z-index:300;box-shadow:0 2px 10px var(--shd);transition:background .3s,border-color .3s;}
 .nav .wrap{display:flex;align-items:stretch;overflow-x:auto;scrollbar-width:none;}
 .nav .wrap::-webkit-scrollbar{display:none;}
 .nl{padding:13px 15px;font-size:14.5px;font-weight:700;white-space:nowrap;border-bottom:3px solid transparent;color:var(--txt2);transition:all .2s;cursor:pointer;font-family:'Noto Sans Bengali',sans-serif;display:flex;align-items:center;border:none;background:none;}
@@ -300,7 +306,19 @@ footer{background:var(--foot);color:#fff;padding:32px 0 0;transition:background 
   line-height:1;
 }
 
-/* Leaderboard banner: 728×90 — home & category pages */
+/* Hero ad: fixed single image, full-width */
+.ad-hero{
+  width:100%;
+  max-width:728px;
+  margin:0 auto;
+  aspect-ratio:728/90;
+  overflow:hidden;
+  display:block;
+}
+.ad-hero a{display:block;width:100%;height:100%;}
+.ad-hero img{width:100%;height:100%;object-fit:fill;display:block;}
+
+/* Leaderboard banner carousel: 728×90 — home & category pages */
 .ad-banner{
   width:100%;
   max-width:728px;
@@ -310,15 +328,31 @@ footer{background:var(--foot);color:#fff;padding:32px 0 0;transition:background 
   position:relative;
   display:block;
 }
-.ad-banner a{display:block;width:100%;height:100%;}
-.ad-banner img{width:100%;height:100%;object-fit:fill;display:block;}
+.ad-carousel{
+  display:flex;
+  width:100%;height:100%;
+  position:relative;
+}
+.ad-carousel-slide{
+  position:absolute;top:0;left:0;
+  width:100%;height:100%;
+  opacity:0;
+  transition:opacity .7s ease;
+  pointer-events:none;
+}
+.ad-carousel-slide.active{
+  opacity:1;
+  pointer-events:auto;
+}
+.ad-carousel-slide a{display:block;width:100%;height:100%;}
+.ad-carousel-slide img{width:100%;height:100%;object-fit:fill;display:block;}
 .ad-banner-ph{
   width:100%;height:100%;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
   background:var(--sur2);
 }
 
-/* Sidebar rectangle: 300×250 — article pages */
+/* Sidebar rectangle carousel: 300×250 — article pages */
 .ad-sidebar{
   width:100%;
   max-width:300px;
@@ -328,8 +362,7 @@ footer{background:var(--foot);color:#fff;padding:32px 0 0;transition:background 
   position:relative;
   display:block;
 }
-.ad-sidebar a{display:block;width:100%;height:100%;}
-.ad-sidebar img{width:100%;height:100%;object-fit:fill;display:block;}
+.ad-sidebar .ad-carousel-slide img{width:100%;height:100%;object-fit:fill;display:block;}
 .ad-sidebar-ph{
   width:100%;height:100%;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
@@ -342,8 +375,7 @@ footer{background:var(--foot);color:#fff;padding:32px 0 0;transition:background 
 
 @media(max-width:600px){
   .ad-slot{margin-bottom:16px;}
-  /* On very small screens banner gets too short — set a min height */
-  .ad-banner{min-height:44px;}
+  .ad-banner,.ad-hero{min-height:44px;}
 }
 
 /* img-fallback for no-image state */
@@ -389,15 +421,17 @@ footer{background:var(--foot);color:#fff;padding:32px 0 0;transition:background 
   .topbar .wrap{flex-direction:row;justify-content:flex-end;}
   #date-display{display:none;}
   .mast{padding:10px 0;}
-  .mast .wrap{flex-direction:row;align-items:center;justify-content:space-between;}
+  .mast .wrap{flex-direction:row;align-items:center;justify-content:space-between;gap:8px;flex-wrap:nowrap;}
+  .logo{min-width:0;flex-shrink:1;}
   .logo-bn{font-size:28px;letter-spacing:-1px;}
   .logo-en{display:none;}
   .logo-tag{font-size:12px;margin-top:2px;}
-  .mast-r{flex-direction:row;align-items:center;gap:8px;flex-shrink:0;}
-  .epaper-btn{padding:6px 12px;font-size:13px;}
-  .ctrl-row{gap:6px;}
-  .lang-grp{border:none;} /* keep lang on mobile, remove border */
-  .lb{padding:5px 8px;font-size:11px;}
+  .mast-r{flex-direction:row;align-items:center;gap:6px;flex-shrink:0;}
+  .ctrl-row{gap:5px;flex-shrink:0;}
+  .search-btn{width:30px;height:30px;font-size:14px;flex-shrink:0;}
+  .theme-btn{width:30px;height:30px;font-size:14px;flex-shrink:0;}
+  .lang-grp{border:1px solid var(--bdr);flex-shrink:0;}
+  .lb{padding:4px 7px;font-size:11px;}
 
   .ticker-lbl{padding:0 12px;font-size:13px;}
   .ticker-inner{gap:32px;}
@@ -461,7 +495,9 @@ footer{background:var(--foot);color:#fff;padding:32px 0 0;transition:background 
   .art-body p{font-size:15px;line-height:1.9;}
   .art-lead{font-size:14px;}
   .sbtn{padding:8px 10px;font-size:12.5px;}
-  .epaper-btn{display:none;}
+  .ctrl-row{gap:4px;}
+  .lb{padding:3px 6px;font-size:10.5px;}
+  .theme-btn,.search-btn{width:28px;height:28px;font-size:13px;}
 }
 
 /* Nav breakpoints */
@@ -511,7 +547,6 @@ footer{background:var(--foot);color:#fff;padding:32px 0 0;transition:background 
       <div class="logo-tag" id="tagline">সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে!</div>
     </div>
     <div class="mast-r">
-      <button class="epaper-btn" id="epaper-btn" onclick="window.location.href='https://dainikanulipi.github.io/da/epaper.html'">ই-পেপার</button>
       <div class="ctrl-row">
         <button class="search-btn" id="search-btn" onclick="toggleSearchBar()" title="Search">🔍</button>
         <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Dark/Light mode">🌙</button>
@@ -538,6 +573,14 @@ footer{background:var(--foot);color:#fff;padding:32px 0 0;transition:background 
   <div class="ticker-lbl" id="ticker-lbl">শিরোনাম</div>
   <div class="ticker-track">
     <div class="ticker-inner" id="ticker"><span class="ti">সর্বশেষ সংবাদের জন্য অপেক্ষা করুন…</span></div>
+  </div>
+</div>
+
+<!-- TAB BAR: home + e-paper tabs (same style as epaper.html) -->
+<div class="tab-bar">
+  <div class="wrap">
+    <button class="tl on" id="tab-home" onclick="nav('');setActiveNav('home')">🏠 <span id="tab-home-label">হোম</span></button>
+    <button class="tl" id="tab-epaper" onclick="window.location.href='https://dainikanulipi.github.io/da/epaper.html'">📰 <span id="tab-epaper-label">ই-পেপার</span></button>
   </div>
 </div>
 
@@ -588,6 +631,11 @@ footer{background:var(--foot);color:#fff;padding:32px 0 0;transition:background 
       </div>
     </div>
   </div>
+</div>
+
+<!-- HERO AD: full-width banner below nav, shown on every page -->
+<div class="wrap" style="padding-top:10px;padding-bottom:0">
+  <div id="hero-ad-container"></div>
 </div>
 
 <!-- MAIN CONTENT: dynamically filled by the router (route()) — shows home page, category page, article page, or search results -->
@@ -694,12 +742,12 @@ function resetMeta() {
 // ── LANGUAGE STRINGS ──
 const S = {
   bn:{dir:'ltr',lang:'bn',breaking:'শিরোনাম',latest:'সর্বশেষ সংবাদ',noNews:'কোনো সংবাদ নেই',noNewsMsg:'এখন পর্যন্ত কোনো সংবাদ প্রকাশিত হয়নি।',loading:'সংবাদ লোড হচ্ছে…',share:'শেয়ার করুন:',fb:'ফেসবুক',wa:'হোয়াটসঅ্যাপ',copy:'লিংক কপি',copied:'✓ কপি!',back:'← পেছনে',related:'সম্পর্কিত সংবাদ',recent:'সাম্প্রতিক সংবাদ',more:'আরও দেখুন →',notFound:'সংবাদটি পাওয়া যায়নি',notFoundMsg:'আপনি যে সংবাদটি খুঁজছেন তা পাওয়া যাচ্ছে না।',tagline:'সত্যের সন্ধানে, নিষ্ঠিক প্রকাশে!',translating:'অনুবাদ হচ্ছে…',translateErr:'অনুবাদ ব্যর্থ',epaper:'ই-পেপার',by:'',goHome:'হোমে ফিরুন',searchPh:'অনুসন্ধান করুন…',searchBtn:'খুঁজুন',searchResults:'অনুসন্ধানের ফলাফল',searchFor:'এর জন্য ফলাফল',resultsFound:'টি সংবাদ পাওয়া গেছে',noResults:'কোনো সংবাদ পাওয়া যায়নি',noResultsMsg:'অন্য শব্দ দিয়ে চেষ্টা করুন।',
-    navHome:'সর্বশেষ',navHomeFull:'সর্বশেষ সংবাদ',tbReporter:'রিপোর্টার পোর্টাল',tbContact:'যোগাযোগ',tbAds:'বিজ্ঞাপন',
+    navHome:'সর্বশেষ',navHomeFull:'সর্বশেষ সংবাদ',tabHome:'হোম',tabEpaper:'ই-পেপার',tbReporter:'রিপোর্টার পোর্টাল',tbContact:'যোগাযোগ',tbAds:'বিজ্ঞাপন',
     ftCatHeading:'বিভাগ',ftInfoHeading:'তথ্য',ftAbout:'আমাদের সম্পর্কে',ftContact:'যোগাযোগ করুন',ftAdvertise:'বিজ্ঞাপন দিন',ftReporter:'রিপোর্টার পোর্টাল',ftPrivacy:'গোপনীয়তা নীতি',
     footerInfo:'প্রতিষ্ঠাতা ও প্রকাশক: অনিক অধিকারী<br>প্রতিষ্ঠাতা ও প্রধান সম্পাদক: মো: ফারহান শাহরিয়ার',
     footerBottom:'দৈনিক অনুলিপি | Dainik Anulipi | The Daily Anulipi — সর্বস্বত্ব সংরক্ষিত ২০২৬',visitWebsite:'🌐 ওয়েবসাইট ভিজিট করুন',footerNoticeTitle:'⚠️ জরুরি ঘোষণা',footerNoticeText:'এই নিউজ পোর্টালটি বর্তমানে "পরীক্ষামূলক সম্প্রচার" কার্যক্রম পরিচালনা করছে। আমরা সচেতনভাবে রাজনৈতিক সংবাদ এড়িয়ে চলি এবং শুধুমাত্র বিনোদন, তথ্য ও জনস্বার্থমূলক সংবাদ প্রকাশ করি। এখানে প্রকাশিত সংবাদের দায়ভার সংশ্লিষ্ট লেখকদের, পোর্টাল কর্তৃপক্ষের নয়। রেজিস্ট্রেশন প্রক্রিয়া এবং পূর্ণাঙ্গ সম্প্রচারের কাজ চলমান।'},
   en:{dir:'ltr',lang:'en',breaking:'Breaking',latest:'Latest News',noNews:'No News Available',noNewsMsg:'No articles published yet. Check back soon.',loading:'Loading news…',share:'Share:',fb:'Facebook',wa:'WhatsApp',copy:'Copy Link',copied:'✓ Copied!',back:'← Back',related:'Related News',recent:'Recent News',more:'See more →',notFound:'Article Not Found',notFoundMsg:'The article you are looking for could not be found.',tagline:'In pursuit of truth, with dedication!',translating:'Translating…',translateErr:'Translation failed',epaper:'E-Paper',by:'By',goHome:'Go Home',searchPh:'Search…',searchBtn:'Search',searchResults:'Search Results',searchFor:'Results for',resultsFound:'articles found',noResults:'No articles found',noResultsMsg:'Try different keywords.',
-    navHome:'Latest',navHomeFull:'Latest News',tbReporter:'Reporter Portal',tbContact:'Contact',tbAds:'Advertise',
+    navHome:'Latest',navHomeFull:'Latest News',tabHome:'Home',tabEpaper:'E-Paper',tbReporter:'Reporter Portal',tbContact:'Contact',tbAds:'Advertise',
     ftCatHeading:'Categories',ftInfoHeading:'Information',ftAbout:'About Us',ftContact:'Contact Us',ftAdvertise:'Advertise With Us',ftReporter:'Reporter Portal',ftPrivacy:'Privacy Policy',
     footerInfo:'Founder & Publisher: Anik Adhikari<br>Founder & Editor-in-Chief: Md. Farhan Shahriar',
     footerBottom:'দৈনিক অনুলিপি | Dainik Anulipi | The Daily Anulipi — All rights reserved 2026',visitWebsite:'🌐 Visit Website',footerNoticeTitle:'⚠️ Important Notice',footerNoticeText:'This news portal is currently running on a "trial broadcast" basis. We consciously avoid political news and publish only entertainment, informational, and public-interest content. Responsibility for news published here lies with the respective authors, not the portal authority. The registration process and full broadcast are underway.'},
@@ -744,7 +792,6 @@ function applyLang(l) {
   document.documentElement.setAttribute('dir', s.dir);
   document.getElementById('ticker-lbl').textContent = s.breaking;
   document.getElementById('tagline').textContent = s.tagline;
-  document.getElementById('epaper-btn').textContent = s.epaper;
   document.getElementById('search-input').placeholder = s.searchPh;
   document.querySelector('.search-go').textContent = s.searchBtn;
   document.querySelectorAll('.lb').forEach(b => b.classList.remove('on'));
@@ -757,6 +804,12 @@ function applyLang(l) {
   document.getElementById('tb-reporter').textContent = s.tbReporter;
   document.getElementById('tb-contact').textContent = s.tbContact;
   document.getElementById('tb-ads').textContent = s.tbAds;
+
+  // ── TAB BAR ──
+  const tabHomeLabel = document.getElementById('tab-home-label');
+  const tabEpaperLabel = document.getElementById('tab-epaper-label');
+  if(tabHomeLabel) tabHomeLabel.textContent = s.tabHome;
+  if(tabEpaperLabel) tabEpaperLabel.textContent = s.tabEpaper;
 
   // ── NAV / MOBILE NAV / FOOTER CATEGORY LABELS ──
   document.getElementById('nl-home').textContent = s.navHome;
@@ -939,58 +992,98 @@ function secHead(label, catKey='') {
 }
 
 
-// ── AD SLOTS (HARDCODED) ──
-// Banner ads — leaderboard style (728×90 area), shows on home & category pages
-const BANNER_ADS = [
-  {
-    img: 'https://dainikanulipi.github.io/da/assets/ads/ad-1.png',
-    link: '#',
-    alt: 'বিজ্ঞাপন ১'
-  },
-  {
-    img: 'https://dainikanulipi.github.io/da/assets/ads/ad-2.png',
-    link: '#',
-    alt: 'বিজ্ঞাপন ২'
-  },
-  {
-    img: 'https://dainikanulipi.github.io/da/assets/ads/ad-3.png',
-    link: '#',
-    alt: 'বিজ্ঞাপন ৩'
-  },
-];
+// ── AD SLOTS ──
+const BASE = 'https://dainikanulipi.github.io/da/assets/ads/';
 
-// Sidebar ads — rectangle style (300×250 area), shows on article pages
-const SIDEBAR_ADS = [
-  {
-    img: 'https://dainikanulipi.github.io/da/assets/ads/sd-ad-1.png',
-    link: '#',
-    alt: 'সাইডবার বিজ্ঞাপন ১'
-  },
-  {
-    img: 'https://dainikanulipi.github.io/da/assets/ads/sd-ad-2.png',
-    link: '#',
-    alt: 'সাইডবার বিজ্ঞাপন ২'
-  },
-];
-
-let _bannerIdx = 0;
-let _sidebarIdx = 0;
-
-function adBanner(id='') {
-  const ad = BANNER_ADS[_bannerIdx % BANNER_ADS.length];
-  _bannerIdx++;
-  const inner = ad.img
-    ? `<a href="${ad.link}" target="_blank" rel="noopener"><img src="${ad.img}" alt="${ad.alt}" onerror="this.closest('.ad-banner').innerHTML='<div class=ad-banner-ph><div class=ad-ph-icon>📢</div><div class=ad-ph-txt>বিজ্ঞাপন · Advertisement</div><div class=ad-ph-size>728 × 90</div></div>'"></a>`
-    : `<div class="ad-banner-ph"><div class="ad-ph-icon">📢</div><div class="ad-ph-txt">বিজ্ঞাপন · Advertisement</div><div class="ad-ph-size">728 × 90</div></div>`;
-  return `<div class="ad-slot" id="ad-${id}"><div class="ad-label">বিজ্ঞাপন · Advertisement</div><div class="ad-banner">${inner}</div></div>`;
+// Hero ad — always the same image, no rotation
+function adHero() {
+  const img = `${BASE}hero.png`;
+  return `<div class="ad-slot" id="ad-hero-slot"><div class="ad-label">বিজ্ঞাপন · Advertisement</div><div class="ad-hero"><a href="#" target="_blank" rel="noopener"><img src="${img}" alt="বিজ্ঞাপন" onerror="this.closest('.ad-hero').innerHTML='<div class=ad-banner-ph><div class=ad-ph-icon>📢</div><div class=ad-ph-txt>বিজ্ঞাপন · Advertisement</div></div>'"></a></div></div>`;
 }
-function adSidebar(id='') {
-  const ad = SIDEBAR_ADS[_sidebarIdx % SIDEBAR_ADS.length];
-  _sidebarIdx++;
-  const inner = ad.img
-    ? `<a href="${ad.link}" target="_blank" rel="noopener"><img src="${ad.img}" alt="${ad.alt}" onerror="this.closest('.ad-sidebar').innerHTML='<div class=ad-sidebar-ph><div class=ad-ph-icon>📢</div><div class=ad-ph-txt>বিজ্ঞাপন · Advertisement</div><div class=ad-ph-size>300 × 250</div></div>'"></a>`
-    : `<div class="ad-sidebar-ph"><div class="ad-ph-icon">📢</div><div class="ad-ph-txt">বিজ্ঞাপন · Advertisement</div><div class="ad-ph-size">300 × 250</div></div>`;
-  return `<div class="ad-slot" id="ad-sb-${id}"><div class="ad-label">বিজ্ঞাপন · Advertisement</div><div class="ad-sidebar">${inner}</div></div>`;
+
+// Banner ads — 5 images, each position shows 2 consecutive ads rotating (5s)
+const BANNER_ADS = [
+  { img: `${BASE}ad-1.png`, link: '#', alt: 'বিজ্ঞাপন ১' },
+  { img: `${BASE}ad-2.png`, link: '#', alt: 'বিজ্ঞাপন ২' },
+  { img: `${BASE}ad-3.png`, link: '#', alt: 'বিজ্ঞাপন ৩' },
+  { img: `${BASE}ad-4.png`, link: '#', alt: 'বিজ্ঞাপন ৪' },
+  { img: `${BASE}ad-5.png`, link: '#', alt: 'বিজ্ঞাপন ৫' },
+];
+
+// Sidebar ads — all 5 images rotate on article pages
+const SIDEBAR_ADS = [
+  { img: `${BASE}sd-ad-1.png`, link: '#', alt: 'সাইডবার বিজ্ঞাপন ১' },
+  { img: `${BASE}sd-ad-2.png`, link: '#', alt: 'সাইডবার বিজ্ঞাপন ২' },
+  { img: `${BASE}sd-ad-3.png`, link: '#', alt: 'সাইডবার বিজ্ঞাপন ৩' },
+  { img: `${BASE}sd-ad-4.png`, link: '#', alt: 'সাইডবার বিজ্ঞাপন ৪' },
+  { img: `${BASE}sd-ad-5.png`, link: '#', alt: 'সাইডবার বিজ্ঞাপন ৫' },
+];
+
+let _bannerIdx = 0; // which pair to start from for next banner slot
+const _carouselTimers = []; // keep track of all setIntervals so we can clear on re-render
+
+function _clearCarousels() {
+  _carouselTimers.forEach(t => clearInterval(t));
+  _carouselTimers.length = 0;
+}
+
+// Each banner position rotates all 5 ads randomly
+function adBanner(id = '') {
+  // Shuffle a copy of BANNER_ADS randomly
+  const shuffled = [...BANNER_ADS].sort(() => Math.random() - 0.5);
+
+  const slides = shuffled.map((ad, si) => `
+    <div class="ad-carousel-slide${si === 0 ? ' active' : ''}">
+      <a href="${ad.link}" target="_blank" rel="noopener">
+        <img src="${ad.img}" alt="${ad.alt}" onerror="this.closest('.ad-carousel-slide').style.display='none'">
+      </a>
+    </div>`).join('');
+
+  const uid = 'bc-' + id.replace(/[^a-z0-9]/gi, '-') + '-' + Date.now();
+  setTimeout(() => _startCarousel(uid), 0);
+
+  return `<div class="ad-slot" id="ad-${id}">
+    <div class="ad-label">বিজ্ঞাপন · Advertisement</div>
+    <div class="ad-banner">
+      <div class="ad-carousel" id="${uid}">${slides}</div>
+    </div>
+  </div>`;
+}
+
+// Sidebar: all 5 sidebar ads rotate (used on article pages)
+function adSidebar(id = '') {
+  // Shuffle a copy of SIDEBAR_ADS randomly — same behavior as the normal banner ad
+  const shuffled = [...SIDEBAR_ADS].sort(() => Math.random() - 0.5);
+  const slides = shuffled.map((ad, si) => `
+    <div class="ad-carousel-slide${si === 0 ? ' active' : ''}">
+      <a href="${ad.link}" target="_blank" rel="noopener">
+        <img src="${ad.img}" alt="${ad.alt}" onerror="this.closest('.ad-carousel-slide').style.display='none'">
+      </a>
+    </div>`).join('');
+
+  const uid = 'sc-' + id.replace(/[^a-z0-9]/gi, '-') + '-' + Date.now();
+  setTimeout(() => _startCarousel(uid), 0);
+
+  return `<div class="ad-slot" id="ad-sb-${id}">
+    <div class="ad-label">বিজ্ঞাপন · Advertisement</div>
+    <div class="ad-sidebar">
+      <div class="ad-carousel" id="${uid}">${slides}</div>
+    </div>
+  </div>`;
+}
+
+function _startCarousel(uid) {
+  const el = document.getElementById(uid);
+  if (!el) return;
+  const slides = el.querySelectorAll('.ad-carousel-slide');
+  if (slides.length < 2) return;
+  let cur = 0;
+  const t = setInterval(() => {
+    slides[cur].classList.remove('active');
+    cur = (cur + 1) % slides.length;
+    slides[cur].classList.add('active');
+  }, 5000);
+  _carouselTimers.push(t);
 }
 
 // ── RENDER HOME ──
@@ -1004,7 +1097,7 @@ function renderHome() {
   const [hero,...rest] = articles;
   const sides = rest.slice(0,3);
   const latest = rest.slice(0,6);
-  const cats = [...new Set(articles.map(a=>a.category))];
+  const cats = NAV_CATS.filter(c => articles.some(a=>a.category===c));
 
   let h = '';
   // HERO
@@ -1017,8 +1110,7 @@ function renderHome() {
     <div class="hs">${sides.map(makeSideCard).join('')}</div>
   </div>`;
 
-  // AD after hero
-  h += adBanner('home-hero');
+  // AD after hero — removed (hero-ad-container already shows above)
 
   // LATEST
   h += secHead(s.latest);
@@ -1027,19 +1119,14 @@ function renderHome() {
   // AD after latest
   h += adBanner('home-1');
 
-  // CAT SECTIONS — ad after EVERY category
-  let catCount = 0;
-  for(const cat of cats) {
+  // CAT SECTIONS — ad after every category except the last one
+  const validCats = cats.filter(c => articles.filter(a=>a.category===c).length >= 2);
+  validCats.forEach((cat, idx) => {
     const ca = articles.filter(a=>a.category===cat).slice(0,3);
-    if(ca.length<2) continue;
     h += secHead(catName(cat), cat);
     h += `<div class="cards">${ca.map(makeCard).join('')}</div>`;
-    catCount++;
-    h += adBanner('cat-'+catCount);
-  }
-
-  // AD at very bottom of home
-  h += adBanner('home-bottom');
+    if(idx < validCats.length - 1) h += adBanner('cat-'+(idx+1));
+  });
 
   set(h);
 }
@@ -1212,7 +1299,6 @@ async function renderArticle(slug) {
     </div>
     <aside class="art-sidebar-col">
       ${adSidebar('art')}
-      ${adSidebar('art-2')}
       <div class="sidebar-w">
         <div class="sw-head">${s.recent}</div>
         ${articles.filter(x=>x.slug!==slug).slice(0,6).map(x=>`
@@ -1241,6 +1327,12 @@ function set(html) { document.getElementById('content').innerHTML = html; }
 
 // ── ROUTER ──
 function route() {
+  _bannerIdx = 0;
+  _clearCarousels();
+  // Re-inject the persistent footer ad so its carousel restarts on every navigation
+  // (otherwise its timer gets wiped by _clearCarousels() above and never recreated)
+  const footerAdEl = document.getElementById('footer-ad-container');
+  if(footerAdEl) footerAdEl.innerHTML = adBanner('footer');
   const hash = location.hash.replace('#','') || '';
   const parts = hash.split('/');
   document.querySelectorAll('.nl').forEach(b=>b.classList.remove('on'));
@@ -1276,9 +1368,10 @@ function route() {
 
   await fetchData();
   buildTicker();
-  // Inject persistent footer ad (always visible)
-  const footerAdEl = document.getElementById('footer-ad-container');
-  if(footerAdEl) footerAdEl.innerHTML = adBanner('footer');
+  // Inject persistent hero ad (below nav, every page) — always hero.png
+  const heroAdEl = document.getElementById('hero-ad-container');
+  if(heroAdEl) heroAdEl.innerHTML = adHero();
+  // Footer ad is now injected by route() itself (so it restarts on every navigation)
   route();
   // Show setup notice if URL not configured
   if (false) { // SCRIPT_URL configured
@@ -1419,7 +1512,7 @@ function route() {
         </a>
       </div>
       <a href="https://dainikanulipi.github.io/da/" target="_blank" rel="noopener" id="popup-visit-link" style="display:block;background:var(--red);color:#fff;text-align:center;padding:11px;font-size:14px;font-weight:700;font-family:'Noto Sans Bengali',sans-serif;text-decoration:none;" onmouseover="this.style.background='var(--dkred)'" onmouseout="this.style.background='var(--red)'">
-        🌐 🌐 ওয়েবসাইট ভিজিট করুন
+        🌐 ওয়েবসাইট ভিজিট করুন
       </a>
     </div>
   </div>
