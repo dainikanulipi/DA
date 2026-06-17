@@ -57,12 +57,13 @@ html[dir=rtl] body,html[dir=rtl] input,html[dir=rtl] textarea,html[dir=rtl] sele
   font-family:'Noto Naskh Arabic',serif;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;overflow-x:hidden;}
 body{
   font-family:'Noto Serif Bengali',serif;
   background:var(--bg);color:var(--txt);
   transition:background .3s,color .3s;
   min-height:100vh;font-size:17px;line-height:1.6;
+  overflow-x:hidden;
 }
 a{text-decoration:none;color:inherit;}
 img{display:block;max-width:100%;}
@@ -163,9 +164,9 @@ button{font-family:inherit;cursor:pointer;}
 .hm-img img,.hm-img-inner{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transition:transform .4s;}
 .hm-img .img-fallback{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;}
 .hm:hover .hm-img img,.hm:hover .hm-img-inner{transform:scale(1.04);}
-.hm-body{padding:18px 20px 20px;}
-.hm-body h2{font-size:24px;font-weight:700;line-height:1.6;margin-bottom:8px;}
-.hm-body .ex{font-size:14.5px;color:var(--txt2);line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.hm-body{padding:18px 20px 20px;min-width:0;overflow:hidden;word-break:break-word;overflow-wrap:anywhere;}
+.hm-body h2{font-size:24px;font-weight:700;line-height:1.6;margin-bottom:8px;word-break:break-word;overflow-wrap:anywhere;}
+.hm-body .ex{font-size:14.5px;color:var(--txt2);line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;overflow-wrap:anywhere;}
 
 /* CARDS CONFIG INCREMENTAL SHIFT */
 .hs{display:flex;flex-direction:column;gap:11px;}
@@ -174,7 +175,8 @@ button{font-family:inherit;cursor:pointer;}
 .sc-thumb{width:96px;height:72px;flex-shrink:0;overflow:hidden;}
 .sc-thumb img{width:100%;height:100%;object-fit:cover;}
 .sc-nothumb{width:96px;height:72px;background:var(--sur3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;}
-.sc-body h4{font-size:14.5px;font-weight:700;line-height:1.5;margin-bottom:4px;}
+.sc-body{min-width:0;overflow:hidden;word-break:break-word;overflow-wrap:anywhere;}
+.sc-body h4{font-size:14.5px;font-weight:700;line-height:1.5;margin-bottom:4px;word-break:break-word;overflow-wrap:anywhere;}
 
 /* ── CARDS GRID ── */
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;}
@@ -185,8 +187,8 @@ button{font-family:inherit;cursor:pointer;}
 .nc-img img,.nc-img-inner{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transition:transform .4s;}
 .nc-img .img-fallback{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:34px;background:var(--sur3);}
 .nc:hover .nc-img img,.nc:hover .nc-img-inner{transform:scale(1.06);}
-.nc-body{padding:12px 14px 15px;flex:1;display:flex;flex-direction:column;}
-.nc-body h4{font-size:16px;font-weight:700;line-height:1.55;margin-bottom:5px;flex:1;}
+.nc-body{padding:12px 14px 15px;flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;word-break:break-word;overflow-wrap:anywhere;}
+.nc-body h4{font-size:16px;font-weight:700;line-height:1.55;margin-bottom:5px;flex:1;word-break:break-word;overflow-wrap:anywhere;}
 .nc-body .ex{font-size:13.5px;color:var(--txt2);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 
 /* ── PILLS ── */
@@ -665,16 +667,19 @@ footer{background:var(--foot);color:#fff;padding:32px 0 0;transition:background 
       <!-- FOOTER COL 2: category quick links -->
       <div class="fc">
         <h5 id="footer-cat-heading">বিভাগ</h5>
-        <a onclick="navCat('জাতীয়')" id="ft-জাতীয়">জাতীয়</a>
-        <a onclick="navCat('সারাদেশ')" id="ft-সারাদেশ">সারাদেশ</a>
-        <a onclick="navCat('বিশ্ব সংবাদ')" id="ft-বিশ্ব সংবাদ">বিশ্ব সংবাদ</a>
-        <a onclick="navCat('বাণিজ্য')" id="ft-বাণিজ্য">বাণিজ্য</a>
-        <a onclick="navCat('অর্থনীতি')" id="ft-অর্থনীতি">অর্থনীতি</a>
-        <a onclick="navCat('খেলা')" id="ft-খেলা">খেলা</a>
-        <a onclick="navCat('আনন্দ সময়')" id="ft-আনন্দ সময়">আনন্দ সময়</a>
-        <a onclick="navCat('চাকরি')" id="ft-চাকরি">চাকরি</a>
-        <a onclick="navCat('মতামত')" id="ft-মতামত">মতামত</a>
-        <a onclick="navCat('বিশেষ সংবাদ')" id="ft-বিশেষ সংবাদ">বিশেষ সংবাদ</a>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 12px;">
+          <a onclick="nav('');setActiveNav('home')" id="ft-সর্বশেষ">সর্বশেষ</a>
+          <a onclick="navCat('অর্থনীতি')" id="ft-অর্থনীতি">অর্থনীতি</a>
+          <a onclick="navCat('জাতীয়')" id="ft-জাতীয়">জাতীয়</a>
+          <a onclick="window.location.href='sports.html'" id="ft-খেলা">খেলা</a>
+          <a onclick="navCat('সারাদেশ')" id="ft-সারাদেশ">সারাদেশ</a>
+          <a onclick="navCat('আনন্দ সময়')" id="ft-আনন্দ সময়">আনন্দ সময়</a>
+          <a onclick="navCat('বিশ্ব সংবাদ')" id="ft-বিশ্ব সংবাদ">বিশ্ব সংবাদ</a>
+          <a onclick="navCat('চাকরি')" id="ft-চাকরি">চাকরি</a>
+          <a onclick="navCat('বাণিজ্য')" id="ft-বাণিজ্য">বাণিজ্য</a>
+          <a onclick="navCat('মতামত')" id="ft-মতামত">মতামত</a>
+          <a onclick="navCat('বিশেষ সংবাদ')" id="ft-বিশেষ সংবাদ" style="grid-column:1/-1;">বিশেষ সংবাদ</a>
+        </div>
       </div>
       <!-- FOOTER COL 3: about/contact/advertise/reporter/privacy links (open popups or new pages) -->
       <div class="fc">
@@ -813,6 +818,8 @@ function applyLang(l) {
 
   // ── NAV / MOBILE NAV / FOOTER CATEGORY LABELS ──
   document.getElementById('nl-home').textContent = s.navHome;
+  const ftSorvoshesh = document.getElementById('ft-সর্বশেষ');
+  if(ftSorvoshesh) ftSorvoshesh.textContent = s.navHome;
   const mnpHome = document.getElementById('mnp-home');
   if(mnpHome) mnpHome.textContent = s.navHomeFull;
   NAV_CATS.forEach(cat => {
