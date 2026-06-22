@@ -398,8 +398,7 @@ footer{background:var(--foot);color:#fff;padding:32px 0 0;transition:background 
     <button class="nl" id="snl-football" onclick="filterSport('football')">ফুটবল</button>
     <button class="nl" id="snl-olympics" onclick="filterSport('olympics')">অলিম্পিক</button>
     <button class="nl" id="snl-schedule" onclick="filterSport('schedule')">শিডিউল</button>
-    <button class="nl" id="snl-table" onclick="filterSport('table')">পয়েন্ট টেবিল</button>
-    <button class="nl" id="snl-player" onclick="filterSport('player')">প্লেয়ার</button>
+    <button class="nl" id="snl-archive" onclick="filterSport('archive')">আর্কাইভ</button>
   </div>
 </nav>
 
@@ -413,16 +412,13 @@ footer{background:var(--foot);color:#fff;padding:32px 0 0;transition:background 
       </span>
       <button class="mnp-close-btn" onclick="closeMobNav()">✕</button>
     </div>
-    <div class="mnp-link" id="mnp-latest" onclick="window.location.href='index.html';closeMobNav()">সর্বশেষ সংবাদ</div>
-    <div class="mnp-link" id="mnp-national" onclick="window.location.href='index.html#cat/national';closeMobNav()">জাতীয়</div>
-    <div class="mnp-link" id="mnp-nationwide" onclick="window.location.href='index.html#cat/nationwide';closeMobNav()">সারাদেশ</div>
-    <div class="mnp-link" id="mnp-world" onclick="window.location.href='index.html#cat/world-news';closeMobNav()">বিশ্ব সংবাদ</div>
-    <div class="mnp-link" id="mnp-business" onclick="window.location.href='index.html#cat/business';closeMobNav()">বাণিজ্য</div>
-    <div class="mnp-link" id="mnp-economy" onclick="window.location.href='index.html#cat/economy';closeMobNav()">অর্থনীতি</div>
-    <div class="mnp-link on" id="mnp-sports" onclick="window.location.href='sports.html';closeMobNav()">খেলা</div>
-    <div class="mnp-link" id="mnp-entertainment" onclick="window.location.href='index.html#cat/entertainment';closeMobNav()">আনন্দ সময়</div>
-    <div class="mnp-link" id="mnp-jobs" onclick="window.location.href='index.html#cat/jobs';closeMobNav()">চাকরি</div>
-    <div class="mnp-link" id="mnp-opinion" onclick="window.location.href='index.html#cat/opinion';closeMobNav()">মতামত</div>
+    <div class="mnp-link on" id="mnp-all" onclick="filterSport('all');closeMobNav()">সব খেলা</div>
+    <div class="mnp-link" id="mnp-cricket" onclick="filterSport('cricket');closeMobNav()">ক্রিকেট</div>
+    <div class="mnp-link" id="mnp-football" onclick="filterSport('football');closeMobNav()">ফুটবল</div>
+    <div class="mnp-link" id="mnp-olympics" onclick="filterSport('olympics');closeMobNav()">অলিম্পিক</div>
+    <div class="mnp-link" id="mnp-schedule" onclick="filterSport('schedule');closeMobNav()">শিডিউল</div>
+    <div class="mnp-link" id="mnp-archive" onclick="filterSport('archive');closeMobNav()">আর্কাইভ</div>
+    <div class="mnp-link" id="mnp-home" onclick="window.location.href='index.html';closeMobNav()" style="border-top:1px solid var(--bdr);margin-top:8px;padding-top:14px;">🏠 হোমে ফিরুন</div>
     <div class="mnp-ctrl">
       <button class="theme-btn" onclick="toggleTheme()" title="Dark mode">🌙</button>
       <div class="lang-grp">
@@ -444,9 +440,10 @@ footer{background:var(--foot);color:#fff;padding:32px 0 0;transition:background 
       <div class="sports-main">
 
         <!-- LIVE MATCHES -->
-        <div class="sh"><div class="sh-label">🔴 লাইভ ম্যাচ</div><div class="sh-line"></div></div>
+        <div class="sh" data-sport="live-header"><div class="sh-label">🔴 লাইভ ম্যাচ</div><div class="sh-line"></div></div>
 
-        <!-- Cricket Live -->
+        <div id="live-cricket-container" data-sport="cricket">
+        <!-- Cricket Live (static fallback shown until live fetch succeeds) -->
         <div class="card" data-sport="cricket">
           <div class="card-head live-head">
             <div class="live-title">Bangladesh vs Sri Lanka · Test · Day 3 · Mirpur</div>
@@ -500,7 +497,10 @@ footer{background:var(--foot);color:#fff;padding:32px 0 0;transition:background 
           </div>
         </div>
 
-        <!-- Football Live -->
+        </div><!-- /live-cricket-container -->
+
+        <div id="live-football-container" data-sport="football">
+        <!-- Football Live (static fallback) -->
         <div class="card" data-sport="football">
           <div class="card-head live-head">
             <div class="live-title">Man City vs Arsenal · EPL · Matchday 38 · Etihad</div>
@@ -551,43 +551,9 @@ footer{background:var(--foot);color:#fff;padding:32px 0 0;transition:background 
           </div>
         </div>
 
-        <!-- PLAYER PROFILES -->
-        <div class="sh" data-sport="player"><div class="sh-label">👤 প্লেয়ার প্রোফাইল</div><div class="sh-line"></div></div>
-        <div class="card" data-sport="player">
-          <div class="card-body">
-            <div class="player-card">
-              <div class="player-avatar">SA</div>
-              <div class="player-info">
-                <div class="player-name">Shakib Al Hasan</div>
-                <div class="player-role">অলরাউন্ডার · বাংলাদেশ · বয়স: ৩৬</div>
-                <div class="player-stats">
-                  <div class="ps-box"><div class="ps-val">৫২৩৪</div><div class="ps-lbl">ODI রান</div></div>
-                  <div class="ps-box"><div class="ps-val">৩১৮</div><div class="ps-lbl">ODI উইকেট</div></div>
-                  <div class="ps-box"><div class="ps-val">৩৪.৫</div><div class="ps-lbl">ব্যাট অ্যাভ</div></div>
-                  <div class="ps-box"><div class="ps-val">২৯.৮</div><div class="ps-lbl">বল অ্যাভ</div></div>
-                  <div class="ps-box"><div class="ps-val">১৬</div><div class="ps-lbl">সেঞ্চুরি</div></div>
-                  <div class="ps-box"><div class="ps-val">৪৫</div><div class="ps-lbl">ফিফটি</div></div>
-                </div>
-              </div>
-            </div>
-            <div class="player-card">
-              <div class="player-avatar" style="background:#1a3a5c;">EH</div>
-              <div class="player-info">
-                <div class="player-name">Erling Haaland</div>
-                <div class="player-role">স্ট্রাইকার · Man City · বয়স: ২৫</div>
-                <div class="player-stats">
-                  <div class="ps-box"><div class="ps-val">৩৬</div><div class="ps-lbl">EPL গোল</div></div>
-                  <div class="ps-box"><div class="ps-val">১২</div><div class="ps-lbl">UCL গোল</div></div>
-                  <div class="ps-box"><div class="ps-val">১৮</div><div class="ps-lbl">অ্যাসিস্ট</div></div>
-                  <div class="ps-box"><div class="ps-val">৮৯</div><div class="ps-lbl">রেটিং</div></div>
-                  <div class="ps-box"><div class="ps-val">৪</div><div class="ps-lbl">হ্যাটট্রিক</div></div>
-                  <div class="ps-box"><div class="ps-val">৩৮</div><div class="ps-lbl">ম্যাচ</div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        </div><!-- /live-football-container -->
 
+        <!-- PLAYER PROFILES -->
         <!-- HEAD TO HEAD -->
         <div class="sh"><div class="sh-label">📊 হেড-টু-হেড ইতিহাস</div><div class="sh-line"></div></div>
         <div class="card" data-sport="cricket">
@@ -616,61 +582,27 @@ footer{background:var(--foot);color:#fff;padding:32px 0 0;transition:background 
         <!-- OLYMPICS -->
         <div class="sh" data-sport="olympics"><div class="sh-label">🥇 অলিম্পিক ২০২৮ — লস অ্যাঞ্জেলেস</div><div class="sh-line"></div></div>
 
-        <div class="card" data-sport="olympics">
-          <div class="card-head grey-head">
-            <span class="grey-title">মেডেল টেবিল (সর্বশেষ আপডেট)</span>
-            <span class="badge b-up">চলছে</span>
-          </div>
-          <div class="th-row g6"><span>#</span><span>দেশ</span><span style="color:#b8860b;">সোনা</span><span style="color:#aaa;">রূপা</span><span style="color:#a0522d;">ব্রোঞ্জ</span><span>মোট</span></div>
-          <div class="tr-row g6 hl"><span class="pos-num">১</span><span>🇺🇸 USA</span><span class="gold-c">৩৮</span><span class="silver-c">২৯</span><span class="bronze-c">২৭</span><span class="pts-num">৯৪</span></div>
-          <div class="tr-row g6"><span class="pos-num">২</span><span>🇨🇳 China</span><span class="gold-c">৩২</span><span class="silver-c">২৪</span><span class="bronze-c">১৯</span><span class="pts-num">৭৫</span></div>
-          <div class="tr-row g6"><span class="pos-num">৩</span><span>🇬🇧 GB</span><span class="gold-c">১৮</span><span class="silver-c">১৬</span><span class="bronze-c">১৪</span><span class="pts-num">৪৮</span></div>
-          <div class="tr-row g6"><span class="pos-num">৪</span><span>🇦🇺 Aus</span><span class="gold-c">১৬</span><span class="silver-c">১২</span><span class="bronze-c">১০</span><span class="pts-num">৩৮</span></div>
-          <div class="tr-row g6"><span class="pos-num">৫</span><span>🇮🇳 India</span><span class="gold-c">৮</span><span class="silver-c">১০</span><span class="bronze-c">৯</span><span class="pts-num">২৭</span></div>
-          <div class="tr-row g6"><span class="pos-num">৩২</span><span>🇧🇩 Bangladesh</span><span class="gold-c">০</span><span class="silver-c">১</span><span class="bronze-c">০</span><span class="pts-num" style="color:var(--txt3);">১</span></div>
-        </div>
-
-        <div class="card" data-sport="olympics">
-          <div class="card-head grey-head"><span class="grey-title">বাংলাদেশের ইভেন্ট ট্র্যাকার</span></div>
-          <div class="card-body">
-            <div class="oly-sport-row">
-              <div><div class="oly-sport">তীরন্দাজি (Archery)</div><div class="oly-athletes">Ruman Shana · Diya Siddiqui</div></div>
-              <span class="badge b-up">কোয়ালিফাইড</span>
-            </div>
-            <div class="oly-sport-row">
-              <div><div class="oly-sport">সাঁতার (Swimming)</div><div class="oly-athletes">Mahfuzur Rahman</div></div>
-              <span class="badge b-green">রূপা জয়</span>
-            </div>
-            <div class="oly-sport-row">
-              <div><div class="oly-sport">অ্যাথলেটিক্স — ১০০মি</div><div class="oly-athletes">MD Ismail Hossain</div></div>
-              <span class="badge b-done">হিটে বিদায়</span>
-            </div>
-            <div class="oly-sport-row">
-              <div><div class="oly-sport">শুটিং (10m Air Rifle)</div><div class="oly-athletes">Abdullah Al Baki</div></div>
-              <span class="badge b-yellow">আগামীকাল</span>
-            </div>
-            <div class="oly-sport-row">
-              <div><div class="oly-sport">কুস্তি (Wrestling)</div><div class="oly-athletes">Farid Ahmed</div></div>
-              <span class="badge b-yellow">২২ জুন</span>
-            </div>
+        <!-- Leaderboard — auto-calculated from Sheet -->
+        <div id="olympics-leaderboard-container" data-sport="olympics">
+          <div class="card" data-sport="olympics">
+            <div class="card-head grey-head"><span class="grey-title">মেডেল টেবিল</span></div>
+            <div class="card-body"><div style="color:var(--txt3);font-size:13px;font-family:'Noto Sans Bengali',sans-serif;">লোড হচ্ছে...</div></div>
           </div>
         </div>
 
-        <div class="card" data-sport="olympics">
-          <div class="card-head grey-head"><span class="grey-title">অলিম্পিক হাইলাইটস</span></div>
-          <div class="card-body">
-            <div class="news-item">
-              <div class="news-icon">🥈</div>
-              <div><div class="news-title">Mahfuzur Rahman-এর রূপা জয় — বাংলাদেশের প্রথম অলিম্পিক পদক ২০২৮ সালে</div><div class="news-meta">১৬ জুন · LA · সাঁতার ৫০মি ফ্রিস্টাইল</div></div>
-            </div>
-            <div class="news-item">
-              <div class="news-icon">🎯</div>
-              <div><div class="news-title">Ruman Shana তীরন্দাজিতে কোয়ার্টার ফাইনালে — সেমিতে দক্ষিণ কোরিয়ার মুখোমুখি</div><div class="news-meta">১৭ জুন · LA · তীরন্দাজি</div></div>
-            </div>
-            <div class="news-item">
-              <div class="news-icon">🏃</div>
-              <div><div class="news-title">Noah Lyles ১০০মি বিশ্বরেকর্ড ভাঙলেন — ৯.৭৬ সেকেন্ডে স্বর্ণ</div><div class="news-meta">১৫ জুন · LA · অ্যাথলেটিক্স</div></div>
-            </div>
+        <!-- Bangladesh event tracker -->
+        <div id="olympics-events-container" data-sport="olympics">
+          <div class="card" data-sport="olympics">
+            <div class="card-head grey-head"><span class="grey-title">বাংলাদেশের ইভেন্ট ট্র্যাকার</span></div>
+            <div class="card-body"><div style="color:var(--txt3);font-size:13px;font-family:'Noto Sans Bengali',sans-serif;">লোড হচ্ছে...</div></div>
+          </div>
+        </div>
+
+        <!-- Recent medals/highlights -->
+        <div id="olympics-highlights-container" data-sport="olympics">
+          <div class="card" data-sport="olympics">
+            <div class="card-head grey-head"><span class="grey-title">সাম্প্রতিক ফলাফল</span></div>
+            <div class="card-body"><div style="color:var(--txt3);font-size:13px;font-family:'Noto Sans Bengali',sans-serif;">লোড হচ্ছে...</div></div>
           </div>
         </div>
 
@@ -702,36 +634,16 @@ footer{background:var(--foot);color:#fff;padding:32px 0 0;transition:background 
         </div>
 
         <!-- EPL TABLE -->
-        <div class="sh" data-sport="table"><div class="sh-label">EPL পয়েন্ট টেবিল ২০২৫/২৬</div><div class="sh-line"></div></div>
-        <div class="card" data-sport="table" style="overflow:hidden;">
-          <div class="th-row g8"><span>#</span><span>দল</span><span>খেলা</span><span>জয়</span><span>ড্র</span><span>হার</span><span>GD</span><span>পয়েন্ট</span></div>
-          <div class="tr-row g8 hl"><span class="pos-num">১</span><span>Man City</span><span>৩৮</span><span>২৮</span><span>৫</span><span>৫</span><span>+৬১</span><span class="pts-num">৮৯</span></div>
-          <div class="tr-row g8"><span class="pos-num">২</span><span>Arsenal</span><span>৩৮</span><span>২৬</span><span>৪</span><span>৮</span><span>+৪৮</span><span class="pts-num">৮২</span></div>
-          <div class="tr-row g8"><span class="pos-num">৩</span><span>Liverpool</span><span>৩৮</span><span>২৪</span><span>৪</span><span>১০</span><span>+৪৪</span><span class="pts-num">৭৬</span></div>
-          <div class="tr-row g8"><span class="pos-num">৪</span><span>Chelsea</span><span>৩৮</span><span>২০</span><span>৭</span><span>১১</span><span>+২৯</span><span class="pts-num">৬৭</span></div>
-          <div class="tr-row g8"><span class="pos-num">৫</span><span>Aston Villa</span><span>৩৮</span><span>১৮</span><span>৭</span><span>১৩</span><span>+১৮</span><span class="pts-num">৬১</span></div>
-          <div class="tr-row g8"><span class="pos-num">৬</span><span>Tottenham</span><span>৩৮</span><span>১৬</span><span>৮</span><span>১৪</span><span>+১২</span><span class="pts-num">৫৬</span></div>
+        <!-- SCHEDULE - dynamic from Sheets (status=upcoming) -->
+        <div class="sh" data-sport="schedule"><div class="sh-label" id="schedule-label">আসন্ন ম্যাচ শিডিউল</div><div class="sh-line"></div></div>
+        <div id="schedule-container" data-sport="schedule">
+          <div class="card" data-sport="schedule"><div class="card-body"><div style="color:var(--txt3);font-size:13px;font-family:'Noto Sans Bengali',sans-serif;">লোড হচ্ছে...</div></div></div>
         </div>
 
-        <!-- SCHEDULE -->
-        <div class="sh" data-sport="schedule"><div class="sh-label">আসন্ন ম্যাচ শিডিউল</div><div class="sh-line"></div></div>
-        <div class="card" data-sport="schedule">
-          <div class="sch-item">
-            <div><div class="sch-teams"><span>🇧🇩 Bangladesh</span><span class="vs">বনাম</span><span>🇮🇳 India</span></div><div class="sch-venue">Shere Bangla National Stadium, Dhaka</div></div>
-            <div class="sch-time"><div><span class="fmt fmt-odi">ODI</span></div>২০ জুন · ২:০০</div>
-          </div>
-          <div class="sch-item">
-            <div><div class="sch-teams"><span>Liverpool</span><span class="vs">বনাম</span><span>Man United</span></div><div class="sch-venue">Anfield, Liverpool</div></div>
-            <div class="sch-time"><div><span class="fmt fmt-epl">EPL</span></div>২২ জুন · ৮:০০</div>
-          </div>
-          <div class="sch-item">
-            <div><div class="sch-teams"><span>🇧🇩 Bangladesh</span><span class="vs">বনাম</span><span>🇿🇦 S. Africa</span></div><div class="sch-venue">Sylhet International Stadium</div></div>
-            <div class="sch-time"><div><span class="fmt fmt-t20">T20I</span></div>২৫ জুন · ৬:০০</div>
-          </div>
-          <div class="sch-item">
-            <div><div class="sch-teams"><span>🇧🇩 BD Archery</span><span class="vs">বনাম</span><span>🇰🇷 S. Korea</span></div><div class="sch-venue">LA Memorial Coliseum, Los Angeles</div></div>
-            <div class="sch-time"><div><span class="fmt fmt-oly">Olympics</span></div>২১ জুন · রাত ১১:০০</div>
-          </div>
+        <!-- ARCHIVE - dynamic from Cricket_Archive + Football_Archive -->
+        <div class="sh" data-sport="archive"><div class="sh-label" id="archive-label">আর্কাইভ — সাম্প্রতিক সমাপ্ত ম্যাচ</div><div class="sh-line"></div></div>
+        <div id="archive-container" data-sport="archive">
+          <div class="card" data-sport="archive"><div class="card-body"><div style="color:var(--txt3);font-size:13px;font-family:'Noto Sans Bengali',sans-serif;">লোড হচ্ছে...</div></div></div>
         </div>
 
       </div><!-- /sports-main -->
@@ -826,8 +738,7 @@ footer{background:var(--foot);color:#fff;padding:32px 0 0;transition:background 
           <a onclick="filterSport('football',true)" id="ft-ফুটবল">ফুটবল</a>
           <a onclick="filterSport('olympics',true)" id="ft-অলিম্পিক">অলিম্পিক</a>
           <a onclick="filterSport('schedule',true)" id="ft-শিডিউল">শিডিউল</a>
-          <a onclick="filterSport('table',true)" id="ft-পয়েন্ট-টেবিল">পয়েন্ট টেবিল</a>
-          <a onclick="filterSport('player',true)" id="ft-প্লেয়ার">প্লেয়ার</a>
+          <a onclick="filterSport('archive',true)" id="ft-আর্কাইভ">আর্কাইভ</a>
         </div>
       </div>
       <!-- FOOTER COL 3: about/contact/advertise/reporter/privacy links (open popups or new pages) -->
@@ -935,13 +846,13 @@ var S = {
     tabHome:'হোম',tabEpaper:'ই-পেপার',tabSports:'স্পোর্টস',
     tbReporter:'রিপোর্টার পোর্টাল',tbContact:'যোগাযোগ',tbAds:'বিজ্ঞাপন',
     snlAll:'সব খেলা',snlCricket:'ক্রিকেট',snlFootball:'ফুটবল',snlOlympics:'অলিম্পিক',
-    snlSchedule:'শিডিউল',snlTable:'পয়েন্ট টেবিল',snlPlayer:'প্লেয়ার',
+    snlSchedule:'শিডিউল',snlArchive:'আর্কাইভ',
     mnpLatest:'সর্বশেষ সংবাদ',mnpNational:'জাতীয়',mnpNationwide:'সারাদেশ',
     mnpWorld:'বিশ্ব সংবাদ',mnpBusiness:'বাণিজ্য',mnpEconomy:'অর্থনীতি',
     mnpSports:'খেলা',mnpEntertainment:'আনন্দ সময়',mnpJobs:'চাকরি',mnpOpinion:'মতামত',
     ftCatHeading:'স্পোর্টস',ftInfoHeading:'তথ্য',
     ftAll:'সব খেলা',ftCricket:'ক্রিকেট',ftFootball:'ফুটবল',ftOlympics:'অলিম্পিক',
-    ftSchedule:'শিডিউল',ftTable:'পয়েন্ট টেবিল',ftPlayer:'প্লেয়ার',
+    ftSchedule:'শিডিউল',ftArchive:'আর্কাইভ',
     ftAbout:'আমাদের সম্পর্কে',ftContact:'যোগাযোগ করুন',ftAdvertise:'বিজ্ঞাপন দিন',
     ftReporter:'রিপোর্টার পোর্টাল',ftPrivacy:'গোপনীয়তা নীতি',
     footerInfo:'প্রতিষ্ঠাতা ও প্রকাশক: অনিক অধিকারী<br>প্রতিষ্ঠাতা ও প্রধান সম্পাদক: মো: ফারহান শাহরিয়ার',
@@ -954,13 +865,13 @@ var S = {
     tabHome:'Home',tabEpaper:'E-Paper',tabSports:'Sports',
     tbReporter:'Reporter Portal',tbContact:'Contact',tbAds:'Advertise',
     snlAll:'All Sports',snlCricket:'Cricket',snlFootball:'Football',snlOlympics:'Olympics',
-    snlSchedule:'Schedule',snlTable:'Points Table',snlPlayer:'Players',
+    snlSchedule:'Schedule',snlArchive:'Archive',
     mnpLatest:'Latest News',mnpNational:'National',mnpNationwide:'Nationwide',
     mnpWorld:'World News',mnpBusiness:'Business',mnpEconomy:'Economy',
     mnpSports:'Sports',mnpEntertainment:'Entertainment',mnpJobs:'Jobs',mnpOpinion:'Opinion',
     ftCatHeading:'Sports',ftInfoHeading:'Information',
     ftAll:'All Sports',ftCricket:'Cricket',ftFootball:'Football',ftOlympics:'Olympics',
-    ftSchedule:'Schedule',ftTable:'Points Table',ftPlayer:'Players',
+    ftSchedule:'Schedule',ftArchive:'Archive',
     ftAbout:'About Us',ftContact:'Contact Us',ftAdvertise:'Advertise With Us',
     ftReporter:'Reporter Portal',ftPrivacy:'Privacy Policy',
     footerInfo:'Founder & Publisher: Anik Adhikari<br>Founder & Editor-in-Chief: Md. Farhan Shahriar',
@@ -998,15 +909,15 @@ function applyLang(l){
   var ts=document.getElementById('tab-sports-label'); if(ts) ts.textContent=s.tabSports;
 
   // sports nav
-  var ids={all:s.snlAll,cricket:s.snlCricket,football:s.snlFootball,olympics:s.snlOlympics,schedule:s.snlSchedule,table:s.snlTable,player:s.snlPlayer};
+  var ids={all:s.snlAll,cricket:s.snlCricket,football:s.snlFootball,olympics:s.snlOlympics,schedule:s.snlSchedule,archive:s.snlArchive};
   Object.keys(ids).forEach(function(k){ var el=document.getElementById('snl-'+k); if(el) el.textContent=ids[k]; });
 
-  // mobile nav
-  var mnpIds={latest:s.mnpLatest,national:s.mnpNational,nationwide:s.mnpNationwide,world:s.mnpWorld,business:s.mnpBusiness,economy:s.mnpEconomy,sports:s.mnpSports,entertainment:s.mnpEntertainment,jobs:s.mnpJobs,opinion:s.mnpOpinion};
+  // mobile nav (mirrors sports sub-nav sections)
+  var mnpIds={all:s.snlAll,cricket:s.snlCricket,football:s.snlFootball,olympics:s.snlOlympics,schedule:s.snlSchedule,archive:s.snlArchive};
   Object.keys(mnpIds).forEach(function(k){ var el=document.getElementById('mnp-'+k); if(el) el.textContent=mnpIds[k]; });
 
   // footer sports links
-  var ftIds={'সব-খেলা':s.ftAll,'ক্রিকেট':s.ftCricket,'ফুটবল':s.ftFootball,'অলিম্পিক':s.ftOlympics,'শিডিউল':s.ftSchedule,'পয়েন্ট-টেবিল':s.ftTable,'প্লেয়ার':s.ftPlayer};
+  var ftIds={'সব-খেলা':s.ftAll,'ক্রিকেট':s.ftCricket,'ফুটবল':s.ftFootball,'অলিম্পিক':s.ftOlympics,'শিডিউল':s.ftSchedule,'আর্কাইভ':s.ftArchive};
   Object.keys(ftIds).forEach(function(k){ var el=document.getElementById('ft-'+k); if(el) el.textContent=ftIds[k]; });
 
   // footer info col
@@ -1038,7 +949,16 @@ function filterSport(sport, scrollUp){
   document.querySelectorAll('.nl').forEach(function(b){b.classList.remove('on');});
   var activeTab=document.getElementById('snl-'+sport);
   if(activeTab) activeTab.classList.add('on');
+  document.querySelectorAll('.mnp-link[id^="mnp-"]').forEach(function(b){b.classList.remove('on');});
+  var activeMnp=document.getElementById('mnp-'+sport);
+  if(activeMnp) activeMnp.classList.add('on');
+
+  // live section header: show when viewing all, cricket, or football — hide for schedule/archive/olympics
+  var liveHeader=document.querySelector('[data-sport="live-header"]');
+  if(liveHeader) liveHeader.style.display = (sport==='all'||sport==='cricket'||sport==='football') ? '' : 'none';
+
   document.querySelectorAll('[data-sport]').forEach(function(el){
+    if(el.dataset.sport === 'live-header') return; // handled above
     el.style.display = (sport==='all'||el.dataset.sport===sport) ? '' : 'none';
   });
   if(scrollUp) window.scrollTo({top:0,left:0,behavior:'smooth'});
@@ -1222,7 +1142,285 @@ window.addEventListener('scroll',function(){
 // ── BOOT ──
 applyTheme(theme);
 setLang(lang);
-document.getElementById('date-display').textContent=bengaliDate();
-</script>
+document.getElementById('date-display').textContent=bengaliDate();// ── LIVE SPORTS DATA ──
+var SPORTS_BACKEND_URL = 'https://script.google.com/macros/s/AKfycbz3hP7GnzuUCI2CK5LzvNrGZRhvGESGVQnnbmt1ceDUDzlaYzgVzxwrjT03sqy2IXDG/exec'; // e.g. https://script.google.com/macros/s/XXXX/exec
+
+// in-memory cache — populated by loadAllSports(), reused by renderScheduleFromCache()
+var _cache = { cricket: [], football: [] };
+
+function loadAllSports(){
+  if(!SPORTS_BACKEND_URL || SPORTS_BACKEND_URL.indexOf('PASTE_') === 0) return;
+  Promise.all([
+    fetch(SPORTS_BACKEND_URL + '?action=sports&type=cricket').then(function(r){ return r.json(); }),
+    fetch(SPORTS_BACKEND_URL + '?action=sports&type=football').then(function(r){ return r.json(); })
+  ]).then(function(results){
+    _cache.cricket  = results[0].matches || [];
+    _cache.football = results[1].matches || [];
+    // render live/finished cards
+    renderLiveContainer('cricket',  _cache.cricket);
+    renderLiveContainer('football', _cache.football);
+    // reuse same data for schedule — no extra fetch
+    renderScheduleFromCache();
+  }).catch(function(err){
+    console.warn('Sports fetch failed, showing static fallback:', err);
+  });
+}
+
+function renderLiveContainer(type, matches){
+  var container = document.getElementById('live-' + type + '-container');
+  if(!container) return;
+  var cards = matches.filter(function(m){ return m.status === 'live' || m.status === 'finished'; });
+  if(!cards.length) return; // keep static fallback
+  container.innerHTML = cards.map(function(m){
+    return type === 'cricket' ? renderCricketCard(m, 'cricket') : renderFootballCard(m, 'football');
+  }).join('');
+}
+
+function renderScheduleFromCache(){
+  var container = document.getElementById('schedule-container');
+  if(!container) return;
+  var upcoming = [];
+  _cache.cricket.filter(function(m){ return m.status === 'upcoming'; })
+    .forEach(function(m){ upcoming.push({ m:m, type:'cricket' }); });
+  _cache.football.filter(function(m){ return m.status === 'upcoming'; })
+    .forEach(function(m){ upcoming.push({ m:m, type:'football' }); });
+  if(!upcoming.length){
+    container.innerHTML = '<div class="card" data-sport="schedule"><div class="card-body"><div style="color:var(--txt3);font-size:13px;font-family:\'Noto Sans Bengali\',sans-serif;">কোনো আসন্ন ম্যাচ নেই</div></div></div>';
+    return;
+  }
+  container.innerHTML = '<div class="card" data-sport="schedule"><div class="card-body">' +
+    upcoming.map(function(item){
+      var m = item.m;
+      var fmt = item.type === 'cricket' ? esc(m.format) : esc(m.competition);
+      return '<div class="sch-item"><div>' +
+        '<div class="sch-teams"><span>' + esc(m.team1) + '</span><span class="vs">বনাম</span><span>' + esc(m.team2) + '</span></div>' +
+        '<div class="sch-venue">' + esc(m.venue) + '</div>' +
+        '</div><div class="sch-time"><div><span class="fmt">' + fmt + '</span></div></div></div>';
+    }).join('') +
+  '</div></div>';
+}
+
+// sport param passed explicitly so archive can use 'archive' instead of 'cricket'/'football'
+function renderCricketCard(m, sport){
+  sport = sport || 'cricket';
+  var liveBadge = m.status === 'live'
+    ? '<div class="live-dot"><div class="dot"></div> লাইভ</div>'
+    : '<div class="live-dot">' + (m.status === 'finished' ? 'সমাপ্ত' : 'শীঘ্রই') + '</div>';
+  return '<div class="card" data-sport="' + sport + '">' +
+    '<div class="card-head live-head">' +
+      '<div class="live-title">' + esc(m.team1) + ' vs ' + esc(m.team2) + ' · ' + esc(m.format) + ' · ' + esc(m.venue) + '</div>' +
+      liveBadge +
+    '</div>' +
+    '<div class="card-body">' +
+      '<div class="team-row"><div class="team-info"><span class="tname">' + esc(m.team1) + '</span></div>' +
+        '<div><span class="tscore">' + esc(m.team1_score) + '</span> <span class="overs">(' + esc(m.team1_overs) + ' ওভার)</span></div></div>' +
+      '<div class="team-row"><div class="team-info"><span class="tname">' + esc(m.team2) + '</span></div>' +
+        '<div><span class="tscore-m">' + esc(m.team2_score) + '</span> <span class="overs">(' + esc(m.team2_overs) + ' ওভার)</span></div></div>' +
+      (m.result_text ? '<div class="divider"></div><div style="font-size:12px;color:var(--txt2);">' + esc(m.result_text) + '</div>' : '') +
+    '</div></div>';
+}
+
+function renderFootballCard(m, sport){
+  sport = sport || 'football';
+  var liveBadge = m.status === 'live'
+    ? '<div class="live-dot"><div class="dot"></div> ' + esc(m.minute) + '\'</div>'
+    : '<div class="live-dot">' + (m.status === 'finished' ? 'সমাপ্ত' : 'শীঘ্রই') + '</div>';
+  return '<div class="card" data-sport="' + sport + '">' +
+    '<div class="card-head live-head">' +
+      '<div class="live-title">' + esc(m.team1) + ' vs ' + esc(m.team2) + ' · ' + esc(m.competition) + ' · ' + esc(m.venue) + '</div>' +
+      liveBadge +
+    '</div>' +
+    '<div class="card-body">' +
+      '<div class="team-row"><div class="team-info"><span class="tname">' + esc(m.team1) + '</span></div><span class="tscore">' + esc(m.team1_score) + '</span></div>' +
+      '<div class="team-row"><div class="team-info"><span class="tname">' + esc(m.team2) + '</span></div><span class="tscore-m">' + esc(m.team2_score) + '</span></div>' +
+    '</div></div>';
+}
+
+// basic XSS-safe escaping
+function esc(str){
+  if(str === undefined || str === null) return '';
+  return String(str).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+
+function fetchArchive(){
+  var container = document.getElementById('archive-container');
+  if(!container || !SPORTS_BACKEND_URL || SPORTS_BACKEND_URL.indexOf('PASTE_') === 0) return;
+  Promise.all([
+    fetch(SPORTS_BACKEND_URL + '?action=sports&type=cricket_archive').then(function(r){ return r.json(); }),
+    fetch(SPORTS_BACKEND_URL + '?action=sports&type=football_archive').then(function(r){ return r.json(); })
+  ]).then(function(results){
+    var archived = [];
+    results.forEach(function(data){
+      if(data.matches) data.matches.forEach(function(m){
+        archived.push({ m:m, isCricket: data.type === 'cricket_archive' });
+      });
+    });
+    if(!archived.length){
+      container.innerHTML = '<div class="card" data-sport="archive"><div class="card-body"><div style="color:var(--txt3);font-size:13px;font-family:\'Noto Sans Bengali\',sans-serif;">কোনো আর্কাইভ ম্যাচ নেই</div></div></div>';
+      return;
+    }
+    // all archive cards get data-sport="archive" so filterSport works correctly
+    container.innerHTML = archived.map(function(item){
+      return item.isCricket
+        ? renderCricketCard(item.m, 'archive')
+        : renderFootballCard(item.m, 'archive');
+    }).join('');
+  }).catch(function(err){ console.warn('Archive fetch failed:', err); });
+}
+
+// initial load
+loadAllSports();
+fetchArchive();
+fetchOlympics();
+
+// refresh every 60s, only while tab is visible; archive refreshes every 5 min
+setInterval(function(){
+  if(document.visibilityState === 'visible') loadAllSports();
+}, 60000);
+setInterval(function(){
+  if(document.visibilityState === 'visible') fetchArchive();
+}, 300000);
+// Olympics is manual data — refresh every 10 min is enough
+setInterval(function(){
+  if(document.visibilityState === 'visible') fetchOlympics();
+}, 600000);
+
+/* ── OLYMPICS ── */
+function fetchOlympics(){
+  if(!SPORTS_BACKEND_URL || SPORTS_BACKEND_URL.indexOf('PASTE_') === 0) return;
+  fetch(SPORTS_BACKEND_URL + '?action=sports&type=olympics')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var events = data.matches || [];
+      if(!events.length) return;
+      renderOlympicsLeaderboard(events);
+      renderOlympicsEvents(events);
+      renderOlympicsHighlights(events);
+    })
+    .catch(function(err){ console.warn('Olympics fetch failed:', err); });
+}
+
+function renderOlympicsLeaderboard(events){
+  var container = document.getElementById('olympics-leaderboard-container');
+  if(!container) return;
+
+  // count medals per country
+  var tally = {};
+  events.forEach(function(e){
+    var c = e.country || '';
+    var m = (e.medal || '').toLowerCase();
+    if(!c || !m) return;
+    if(!tally[c]) tally[c] = { country:c, gold:0, silver:0, bronze:0 };
+    if(m === 'gold')   tally[c].gold++;
+    else if(m === 'silver') tally[c].silver++;
+    else if(m === 'bronze') tally[c].bronze++;
+  });
+
+  var rows = Object.values(tally).sort(function(a,b){
+    if(b.gold !== a.gold) return b.gold - a.gold;
+    if(b.silver !== a.silver) return b.silver - a.silver;
+    return b.bronze - a.bronze;
+  });
+
+  if(!rows.length){
+    container.innerHTML = '<div class="card" data-sport="olympics"><div class="card-head grey-head"><span class="grey-title">মেডেল টেবিল</span></div><div class="card-body"><div style="color:var(--txt3);font-size:13px;">এখনো কোনো পদক নেই</div></div></div>';
+    return;
+  }
+
+  var bdRow = null;
+  var tableRows = rows.map(function(r, i){
+    var isBd = r.country.toLowerCase().indexOf('bangladesh') > -1;
+    if(isBd) bdRow = { r:r, rank:i+1 };
+    var total = r.gold + r.silver + r.bronze;
+    return '<div class="tr-row g6' + (isBd ? ' hl' : '') + '">' +
+      '<span class="pos-num">' + toBengaliNum(i+1) + '</span>' +
+      '<span>' + esc(r.country) + '</span>' +
+      '<span class="gold-c">' + toBengaliNum(r.gold) + '</span>' +
+      '<span class="silver-c">' + toBengaliNum(r.silver) + '</span>' +
+      '<span class="bronze-c">' + toBengaliNum(r.bronze) + '</span>' +
+      '<span class="pts-num">' + toBengaliNum(total) + '</span>' +
+    '</div>';
+  }).join('');
+
+  // if Bangladesh not in top list, append at bottom with separator
+  var bdExtra = '';
+  if(!bdRow){
+    bdExtra = '<div class="tr-row g6" style="opacity:.5;"><span class="pos-num">—</span><span>🇧🇩 Bangladesh</span><span class="gold-c">০</span><span class="silver-c">০</span><span class="bronze-c">০</span><span class="pts-num">০</span></div>';
+  }
+
+  container.innerHTML =
+    '<div class="card" data-sport="olympics">' +
+      '<div class="card-head grey-head"><span class="grey-title">মেডেল টেবিল</span><span class="badge b-up">আপডেটেড</span></div>' +
+      '<div class="th-row g6"><span>#</span><span>দেশ</span><span style="color:#b8860b;">🥇</span><span style="color:#aaa;">🥈</span><span style="color:#a0522d;">🥉</span><span>মোট</span></div>' +
+      tableRows + bdExtra +
+    '</div>';
+}
+
+function renderOlympicsEvents(events){
+  var container = document.getElementById('olympics-events-container');
+  if(!container) return;
+
+  // show all events, Bangladesh first then others
+  var bd = events.filter(function(e){ return (e.country||'').toLowerCase().indexOf('bangladesh') > -1; });
+  var others = events.filter(function(e){ return (e.country||'').toLowerCase().indexOf('bangladesh') === -1; });
+  var sorted = bd.concat(others);
+
+  var medalIcon = { gold:'🥇', silver:'🥈', bronze:'🥉' };
+
+  var rows = sorted.map(function(e){
+    var medal = e.medal ? (e.medal+'').toLowerCase() : '';
+    var badgeClass = medal === 'gold' ? 'b-green' : medal === 'silver' ? 'b-up' : medal === 'bronze' ? 'b-yellow'
+                   : e.status === 'live' ? 'b-live' : e.status === 'upcoming' ? 'b-yellow' : 'b-done';
+    var badgeText = medal ? (medalIcon[medal] || '') + ' ' + esc(e.medal)
+                  : e.status === 'live' ? 'লাইভ' : e.status === 'upcoming' ? esc(e.date || 'আসন্ন') : esc(e.result || 'সমাপ্ত');
+    var meta = [e.category, e.round, e.score_time, e.venue].filter(Boolean).map(esc).join(' · ');
+    return '<div class="oly-sport-row">' +
+      '<div>' +
+        '<div class="oly-sport">' + esc(e.event) + (e.athlete ? ' <span style="font-size:11px;color:var(--txt3);">— ' + esc(e.athlete) + '</span>' : '') + '</div>' +
+        (meta ? '<div class="oly-athletes">' + meta + '</div>' : '') +
+        (e.notes ? '<div class="oly-athletes" style="color:var(--red);">' + esc(e.notes) + '</div>' : '') +
+      '</div>' +
+      '<span class="badge ' + badgeClass + '">' + badgeText + '</span>' +
+    '</div>';
+  }).join('');
+
+  container.innerHTML =
+    '<div class="card" data-sport="olympics">' +
+      '<div class="card-head grey-head"><span class="grey-title">ইভেন্ট ট্র্যাকার</span></div>' +
+      '<div class="card-body">' + rows + '</div>' +
+    '</div>';
+}
+
+function renderOlympicsHighlights(events){
+  var container = document.getElementById('olympics-highlights-container');
+  if(!container) return;
+
+  // show finished events with medal or notable result, most recent first
+  var finished = events.filter(function(e){ return e.status === 'finished' && (e.medal || e.result); });
+  if(!finished.length) return;
+
+  var icon = { gold:'🥇', silver:'🥈', bronze:'🥉' };
+  var rows = finished.slice(0, 5).map(function(e){
+    var m = (e.medal||'').toLowerCase();
+    var ico = icon[m] || '🏅';
+    var title = esc(e.event) + (e.athlete ? ' — ' + esc(e.athlete) : '') + (e.result ? ' (' + esc(e.result) + ')' : '');
+    var meta = [e.date, e.venue, e.category].filter(Boolean).map(esc).join(' · ');
+    return '<div class="news-item"><div class="news-icon">' + ico + '</div>' +
+      '<div><div class="news-title">' + title + '</div><div class="news-meta">' + meta + '</div></div>' +
+    '</div>';
+  }).join('');
+
+  container.innerHTML =
+    '<div class="card" data-sport="olympics">' +
+      '<div class="card-head grey-head"><span class="grey-title">সাম্প্রতিক ফলাফল</span></div>' +
+      '<div class="card-body">' + rows + '</div>' +
+    '</div>';
+}
+
+function toBengaliNum(n){
+  return String(n).replace(/[0-9]/g, function(d){ return '০১২৩৪৫৬৭৮৯'[+d]; });
+}</script>
 </body>
 </html>
